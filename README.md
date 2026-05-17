@@ -1,73 +1,79 @@
-# React + TypeScript + Vite
+# Priority Pass
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, robust React 19 application built with Vite and TypeScript, featuring a professional-grade development workflow.
 
-Currently, two official plugins are available:
+## 🚀 Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Framework:** [React 19](https://react.dev/)
+- **Build Tool:** [Vite](https://vite.dev/)
+- **Language:** [TypeScript](https://www.typescriptlang.org/)
+- **Linting:** [ESLint](https://eslint.org/) (with Type-Aware rules & React-specific plugins)
+- **Formatting:** [Prettier](https://prettier.io/)
+- **Git Hooks:** [Husky](https://typicode.github.io/husky/) & [lint-staged](https://github.com/lint-staged/lint-staged)
+- **Commit Standards:** [Commitlint](https://commitlint.js.org/) & [Commitizen](https://github.com/commitizen/cz-cli)
 
-## React Compiler
+## 🛠️ Development Workflow
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+This project enforces high code quality and consistency through automated tooling:
 
-## Expanding the ESLint configuration
+- **Type-Aware Linting:** Catches logical errors using TypeScript type information.
+- **Auto-formatting:** Prettier ensures a consistent coding style across the codebase.
+- **Pre-commit Hooks:** Every commit is automatically linted and formatted before being accepted.
+- **Conventional Commits:** Standardized commit messages are enforced via Commitlint.
+- **Path Aliases:** Use `@/` to import from the `src` directory (e.g., `import { App } from '@/App'`).
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🏁 Getting Started
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### Prerequisites
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+Ensure you have [pnpm](https://pnpm.io/) installed.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Installation
+
+```bash
+pnpm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Development
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Start the development server with Hot Module Replacement (HMR):
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+pnpm dev
 ```
+
+### Production Build
+
+Build the application for production:
+
+```bash
+pnpm run build
+```
+
+### Linting & Formatting
+
+Manual checks (though these run automatically on commit):
+
+```bash
+# Run ESLint
+pnpm run lint
+
+# Run Prettier
+pnpm exec prettier --write .
+```
+
+### Making Commits
+
+To ensure your commit messages meet the project's standards, use the interactive commitizen prompt:
+
+```bash
+pnpm run commit
+```
+
+## 📁 Project Structure
+
+- `src/`: Application source code.
+- `public/`: Static assets.
+- `.husky/`: Git hook configurations.
+- `eslint.config.js`: Modern ESLint flat configuration.
+- `tsconfig.json`: TypeScript configuration with path aliases.
