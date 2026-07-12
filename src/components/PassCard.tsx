@@ -1,33 +1,30 @@
-import { Card, CardContent } from './ui/card'
 import type { BoardingPass } from '../types/BoardingPass'
-import { Plane } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
 export function PassCard({ pass }: { pass: BoardingPass }) {
   const navigate = useNavigate()
 
   return (
-    <Card
-      className="cursor-pointer hover:shadow-md transition-all overflow-hidden border-none shadow-sm"
+    <div
+      className="cursor-pointer bg-card rounded-3xl overflow-hidden flex gap-4 items-center p-5"
       onClick={() => {
         void navigate(`/pass/${pass.id}`)
       }}
     >
-      <div className="h-3 w-full" style={{ backgroundColor: pass.themeColor }} />
-      <CardContent className="p-5">
-        <div className="flex justify-between items-center mb-3">
-          <div className="text-3xl font-black">{pass.origin}</div>
-          <Plane className="text-muted-foreground w-6 h-6 rotate-90" />
-          <div className="text-3xl font-black">{pass.destination}</div>
+      <svg
+        viewBox="0 0 24 24"
+        className="w-12 h-12 p-2 text-[#f9c933] fill-current bg-blue-700 rounded-full"
+      >
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5c-2.5 0-4.5-2-4.5-4.5S8.5 7.5 11 7.5s4.5 2 4.5 4.5-2 4.5-4.5 4.5z" />
+      </svg>
+      <div className="grid gap-1">
+        <div className="font-normal text-md">
+          {pass.origin} to {pass.destination}
         </div>
-        <div className="flex justify-between text-sm text-muted-foreground font-medium">
-          <span className="truncate max-w-[60%]">{pass.passengerName}</span>
-          <span>{pass.date}</span>
+        <div className="text-sm text-muted-foreground font-medium">
+          {pass.passengerName}, {pass.date}
         </div>
-        <div className="mt-2 text-xs font-semibold uppercase opacity-60">
-          Flight {pass.flightNumber} • Seat {pass.seat}
-        </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }

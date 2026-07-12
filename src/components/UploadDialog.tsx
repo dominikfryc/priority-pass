@@ -5,7 +5,7 @@ import { BrowserAztecCodeReader } from '@zxing/browser'
 import { usePassStore } from '../store/usePassStore'
 import { parseBCBP } from '../utils/parseBCBP'
 import { useNavigate } from 'react-router-dom'
-import { Upload, Image as ImageIcon } from 'lucide-react'
+import { MdAdd, MdImage } from 'react-icons/md'
 import { toast } from 'sonner'
 import ReactCrop, { type Crop, type PixelCrop, centerCrop, makeAspectCrop } from 'react-image-crop'
 import 'react-image-crop/dist/ReactCrop.css'
@@ -121,8 +121,8 @@ export function UploadDialog() {
         }
       }}
     >
-      <DialogTrigger className="inline-flex items-center justify-center whitespace-nowrap rounded-full shadow-lg h-14 px-6 fixed bottom-6 right-6 gap-2 text-base font-semibold transition-transform hover:scale-105 bg-primary text-primary-foreground hover:bg-primary/90">
-        <Upload className="w-5 h-5" />
+      <DialogTrigger className="inline-flex items-center justify-center whitespace-nowrap rounded-full shadow-lg h-14 px-6 fixed bottom-8 right-6 gap-2 text-base font-medium transition-transform hover:scale-105 bg-primary text-primary-foreground hover:bg-primary/90">
+        <MdAdd className="w-6 h-6" />
         Add Pass
       </DialogTrigger>
       <DialogContent
@@ -141,8 +141,8 @@ export function UploadDialog() {
           <DialogTitle>Upload Boarding Pass</DialogTitle>
         </DialogHeader>
         {!imageSrc ? (
-          <div className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-border rounded-xl bg-muted/30 transition-colors hover:bg-muted/50 shrink-0">
-            <ImageIcon className="w-12 h-12 text-muted-foreground mb-4" />
+          <div className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-border rounded-xl bg-muted/30 mt-4 transition-colors hover:bg-muted/50">
+            <MdImage className="w-12 h-12 text-muted-foreground mb-4" />
             <p className="text-sm text-center text-muted-foreground mb-6">
               Upload a screenshot of your boarding pass containing the Aztec barcode.
             </p>

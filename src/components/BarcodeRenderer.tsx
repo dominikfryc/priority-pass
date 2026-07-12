@@ -3,9 +3,10 @@ import bwipjs from 'bwip-js/browser'
 
 interface BarcodeRendererProps {
   data: string
+  className?: string
 }
 
-export function BarcodeRenderer({ data }: BarcodeRendererProps) {
+export function BarcodeRenderer({ data, className = '' }: BarcodeRendererProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
@@ -24,8 +25,8 @@ export function BarcodeRenderer({ data }: BarcodeRendererProps) {
   }, [data])
 
   return (
-    <div className="flex justify-center p-4 bg-white rounded-xl shadow-sm">
-      <canvas ref={canvasRef} className="max-w-full h-auto" />
+    <div className={`flex justify-center p-[18px] bg-[#f2f2f2] rounded-[24px] ${className}`}>
+      <canvas ref={canvasRef} className="max-w-full h-auto w-[180px]" />
     </div>
   )
 }
