@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { usePassStore } from '../store/usePassStore'
 import { PassCard } from '../components/PassCard'
 import { MdAirplaneTicket } from 'react-icons/md'
@@ -5,6 +6,10 @@ import { UploadDialog } from '../components/UploadDialog'
 
 export function Home() {
   const { passes } = usePassStore()
+
+  useEffect(() => {
+    document.title = 'Priority Pass'
+  }, [])
 
   return (
     <div className="grid px-6 py-8 gap-8">
@@ -24,7 +29,7 @@ export function Home() {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+        <div className="grid gap-2">
           {passes.map((pass) => (
             <PassCard key={pass.id} pass={pass} />
           ))}

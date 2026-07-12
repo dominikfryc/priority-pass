@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Button } from './ui/button'
 import { BrowserAztecCodeReader } from '@zxing/browser'
 import { usePassStore } from '../store/usePassStore'
-import { parseBCBP } from '../utils/parseBCBP'
+import { decode } from 'bcbp'
 import { useNavigate } from 'react-router-dom'
 import { MdAdd, MdImage } from 'react-icons/md'
 import { toast } from 'sonner'
@@ -85,15 +85,72 @@ export function UploadDialog() {
 
       const reader = new BrowserAztecCodeReader()
       const img = new Image()
-      img.src = croppedImageUrl
 
       await new Promise((resolve, reject) => {
         img.onload = resolve
         img.onerror = reject
+        img.src = croppedImageUrl
       })
 
       const result = await reader.decodeFromImageElement(img)
-      const parsedPass = parseBCBP(result.getText())
+      const text = result.getText()
+      const decoded = decode(text)
+      const hue = Math.floor(Math.random() * 360)
+      const leg = decoded.data?.legs?.[0]
+
+      let airlineName = ''
+      let airlineLogoUrl = ''
+      let departureCity = ''
+      let arrivalCity = ''
+
+      try {
+        const [airlinesRes, airportsRes] = await Promise.all([
+          fetch('/airlines.json'),
+          fetch('/airports.json'),
+        ])
+        const airlines = (await airlinesRes.json()) as Record<
+          string,
+          { name: string; logo: string }
+        >
+        const airports = (await airportsRes.json()) as Record<string, string>
+
+        const foundAirline = leg?.operatingCarrierDesignator
+          ? airlines[leg.operatingCarrierDesignator]
+          : undefined
+        if (foundAirline) {
+          airlineName = foundAirline.name || ''
+          airlineLogoUrl = foundAirline.logo || ''
+        }
+
+        if (leg?.departureAirport) {
+          departureCity = airports[leg.departureAirport] || ''
+        }
+        if (leg?.arrivalAirport) {
+          arrivalCity = airports[leg.arrivalAirport] || ''
+        }
+      } catch (error) {
+        console.error('Failed to fetch airlines or airports data', error)
+      }
+
+      const parsedPass = {
+        id: crypto.randomUUID(),
+        passengerName: decoded.data?.passengerName || '',
+        operatingCarrierPNR: leg?.operatingCarrierPNR || '',
+        departureAirport: leg?.departureAirport || '',
+        arrivalAirport: leg?.arrivalAirport || '',
+        operatingCarrierDesignator: leg?.operatingCarrierDesignator || '',
+        flightNumber: leg?.flightNumber || '',
+        flightDate: leg?.flightDate || new Date(),
+        seatNumber: leg?.seatNumber || '',
+        checkInSequenceNumber: leg?.checkInSequenceNumber || '',
+        airlineName,
+        airlineLogoUrl,
+        departureCity,
+        arrivalCity,
+        rawAztecData: text,
+        themeColor: `hsl(${hue}, 70%, 50%)`,
+      }
+      console.log('Parsed boarding pass:', parsedPass)
 
       addPass(parsedPass)
       setOpen(false)
@@ -121,10 +178,14 @@ export function UploadDialog() {
         }
       }}
     >
-      <DialogTrigger className="inline-flex items-center justify-center whitespace-nowrap rounded-full shadow-lg h-14 px-6 fixed bottom-8 right-6 gap-2 text-base font-medium transition-transform hover:scale-105 bg-primary text-primary-foreground hover:bg-primary/90">
-        <MdAdd className="w-6 h-6" />
-        Add Pass
-      </DialogTrigger>
+      <div className="fixed bottom-8 left-0 right-0 pointer-events-none flex justify-center z-40">
+        <div className="w-full max-w-md relative h-14">
+          <DialogTrigger className="pointer-events-auto absolute right-6 bottom-0 inline-flex items-center justify-center whitespace-nowrap rounded-full shadow-lg h-14 px-6 gap-2 text-base font-medium bg-primary text-primary-foreground cursor-pointer">
+            <MdAdd className="w-6 h-6" />
+            Add Pass
+          </DialogTrigger>
+        </div>
+      </div>
       <DialogContent
         className={`transition-all duration-200 ${imageSrc ? 'w-fit sm:max-w-none p-4' : 'sm:max-w-md'}`}
         style={

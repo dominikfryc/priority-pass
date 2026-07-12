@@ -1,8 +1,18 @@
-import type { BoardingPass } from '../types/BoardingPass'
+import type { BoardingPass } from '../store/usePassStore'
 import { useNavigate } from 'react-router-dom'
+import { formatPassengerName } from '../lib/formatName'
+import { MdFlight } from 'react-icons/md'
 
 export function PassCard({ pass }: { pass: BoardingPass }) {
   const navigate = useNavigate()
+
+  const origin = pass.departureAirport || ''
+  const destination = pass.arrivalAirport || ''
+  const passengerName = formatPassengerName(pass.passengerName)
+  const flightDateRaw = pass.flightDate
+  const date = flightDateRaw
+    ? new Date(flightDateRaw).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+    : ''
 
   return (
     <div
@@ -11,18 +21,25 @@ export function PassCard({ pass }: { pass: BoardingPass }) {
         void navigate(`/pass/${pass.id}`)
       }}
     >
-      <svg
-        viewBox="0 0 24 24"
-        className="w-12 h-12 p-2 text-[#f9c933] fill-current bg-blue-700 rounded-full"
-      >
-        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5c-2.5 0-4.5-2-4.5-4.5S8.5 7.5 11 7.5s4.5 2 4.5 4.5-2 4.5-4.5 4.5z" />
-      </svg>
+      {pass.airlineLogoUrl ? (
+        <div className="w-12 h-12 rounded-full border border-white/50 flex items-center justify-center shrink-0 overflow-hidden">
+          <img
+            src={pass.airlineLogoUrl}
+            alt={pass.airlineName}
+            className="w-full h-full object-contain p-1"
+          />
+        </div>
+      ) : (
+        <div className="w-12 h-12 rounded-full bg-blue-700 flex items-center justify-center shrink-0">
+          <MdFlight className="w-6 h-6 text-white" />
+        </div>
+      )}
       <div className="grid gap-1">
         <div className="font-normal text-md">
-          {pass.origin} to {pass.destination}
+          {origin} to {destination}
         </div>
         <div className="text-sm text-muted-foreground font-medium">
-          {pass.passengerName}, {pass.date}
+          {passengerName}, {date}
         </div>
       </div>
     </div>

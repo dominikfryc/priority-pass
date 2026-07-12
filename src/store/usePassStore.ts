@@ -1,6 +1,24 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { BoardingPass } from '../types/BoardingPass'
+
+export type BoardingPass = {
+  id: string
+  passengerName: string
+  operatingCarrierPNR: string
+  departureAirport: string
+  arrivalAirport: string
+  operatingCarrierDesignator: string
+  flightNumber: string
+  flightDate: Date
+  seatNumber: string
+  checkInSequenceNumber: string
+  airlineName: string
+  airlineLogoUrl: string
+  departureCity: string
+  arrivalCity: string
+  rawAztecData: string
+  themeColor: string
+}
 
 interface PassStore {
   passes: BoardingPass[]

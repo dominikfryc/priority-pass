@@ -17,6 +17,9 @@ importers:
       '@zxing/browser':
         specifier: ^0.2.0
         version: 0.2.0(@zxing/library@0.22.0)
+      bcbp:
+        specifier: ^6.0.2
+        version: 6.0.2
       bwip-js:
         specifier: ^4.10.1
         version: 4.10.1
@@ -1712,6 +1715,9 @@ packages:
     resolution: {integrity: sha512-xjOFN16Ha1+Rz4nFYKqHU/LSB+gx/Vi3yQLX7r7sAW+Wa+8hhF2h4pvqTrTMc8+WcDBEunnUurr46Jvv0jk3Vg==}
     engines: {node: '>=6.0.0'}
     hasBin: true
+
+  bcbp@6.0.2:
+    resolution: {integrity: sha512-GOpIZW5+lgbpHghyuwBCm1SjneaCw3lk/oHpUtS+1HewAkhZKZfmGDG6U4toUMCS2KOOG3YuVU5Hkt34M8JVEg==}
 
   bl@4.1.0:
     resolution: {integrity: sha512-1W07cM9gS6DcLperZfFSj+bWLtaPGSOHWhPiGzXmvVJbRLdG82sH/Kn8EtW1VqWVA54AKf2h5k5BbnIbwF3h6w==}
@@ -5916,6 +5922,8 @@ snapshots:
   base64-js@1.5.1: {}
 
   baseline-browser-mapping@2.10.30: {}
+
+  bcbp@6.0.2: {}
 
   bl@4.1.0:
     dependencies:
