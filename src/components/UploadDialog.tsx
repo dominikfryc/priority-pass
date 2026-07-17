@@ -9,6 +9,7 @@ import { MdAdd, MdImage } from 'react-icons/md'
 import { toast } from 'sonner'
 import ReactCrop, { type Crop, type PixelCrop, centerCrop, makeAspectCrop } from 'react-image-crop'
 import 'react-image-crop/dist/ReactCrop.css'
+import { Vibrant } from 'node-vibrant/browser'
 
 export function UploadDialog() {
   const [open, setOpen] = useState(false)
@@ -95,7 +96,6 @@ export function UploadDialog() {
       const result = await reader.decodeFromImageElement(img)
       const text = result.getText()
       const decoded = decode(text)
-      const hue = Math.floor(Math.random() * 360)
       const leg = decoded.data?.legs?.[0]
 
       let airlineName = ''
@@ -132,6 +132,53 @@ export function UploadDialog() {
         console.error('Failed to fetch airlines or airports data', error)
       }
 
+      const theme = {
+        backgroundColor: '#ffffff',
+        foregroundColor: '#000000',
+      }
+      let palette = [] as {
+        backgroundColor: string
+        foregroundColor: string
+      }[]
+      if (airlineLogoUrl) {
+        try {
+          const proxiedUrl = airlineLogoUrl
+            .replace('https://images.kiwi.com', '/kiwi-images')
+            .replace('/airlines/64/', '/airlines/64x64/')
+          const vibrantPallete = await Vibrant.from(proxiedUrl).getPalette()
+          theme.backgroundColor = vibrantPallete.DarkVibrant?.hex || '#ffffff'
+          theme.foregroundColor = vibrantPallete.DarkVibrant?.titleTextColor || '#000000'
+          palette = [
+            {
+              backgroundColor: vibrantPallete.DarkVibrant?.hex || '#ffffff',
+              foregroundColor: vibrantPallete.DarkVibrant?.titleTextColor || '#000000',
+            },
+            {
+              backgroundColor: vibrantPallete.Vibrant?.hex || '#ffffff',
+              foregroundColor: vibrantPallete.Vibrant?.titleTextColor || '#000000',
+            },
+            {
+              backgroundColor: vibrantPallete.LightVibrant?.hex || '#ffffff',
+              foregroundColor: vibrantPallete.LightVibrant?.titleTextColor || '#000000',
+            },
+            {
+              backgroundColor: vibrantPallete.Muted?.hex || '#ffffff',
+              foregroundColor: vibrantPallete.Muted?.titleTextColor || '#000000',
+            },
+            {
+              backgroundColor: vibrantPallete.DarkMuted?.hex || '#ffffff',
+              foregroundColor: vibrantPallete.DarkMuted?.titleTextColor || '#000000',
+            },
+            {
+              backgroundColor: vibrantPallete.LightMuted?.hex || '#ffffff',
+              foregroundColor: vibrantPallete.LightMuted?.titleTextColor || '#000000',
+            },
+          ]
+        } catch (err) {
+          console.error('Failed to extract color from logo', err)
+        }
+      }
+
       const parsedPass = {
         id: crypto.randomUUID(),
         passengerName: decoded.data?.passengerName || '',
@@ -148,7 +195,8 @@ export function UploadDialog() {
         departureCity,
         arrivalCity,
         rawAztecData: text,
-        themeColor: `hsl(${hue}, 70%, 50%)`,
+        theme,
+        palette,
       }
       console.log('Parsed boarding pass:', parsedPass)
 
@@ -159,7 +207,7 @@ export function UploadDialog() {
       await navigate(`/pass/${parsedPass.id}`)
     } catch (error) {
       console.error(error)
-      toast.error('Failed to read Aztec code. Please make sure the image is clear and cropped.')
+      toast.error('Failed to read Aztec code.')
     } finally {
       setIsProcessing(false)
     }

@@ -26,7 +26,7 @@ export function PassCard({ pass }: { pass: BoardingPass }) {
           <img
             src={pass.airlineLogoUrl}
             alt={pass.airlineName}
-            className="w-full h-full object-contain p-1"
+            className="w-full h-full object-contain"
           />
         </div>
       ) : (

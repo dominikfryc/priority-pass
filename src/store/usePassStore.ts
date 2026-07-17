@@ -17,7 +17,14 @@ export type BoardingPass = {
   departureCity: string
   arrivalCity: string
   rawAztecData: string
-  themeColor: string
+  theme: {
+    backgroundColor: string
+    foregroundColor: string
+  }
+  palette: {
+    backgroundColor: string
+    foregroundColor: string
+  }[]
 }
 
 interface PassStore {

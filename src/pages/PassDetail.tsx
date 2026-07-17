@@ -4,6 +4,7 @@ import { usePassStore } from '../store/usePassStore'
 import { BarcodeRenderer } from '../components/BarcodeRenderer'
 import { MdArrowBack, MdFlight, MdMoreVert, MdDelete } from 'react-icons/md'
 import { formatPassengerName } from '../lib/formatName'
+import { toast } from 'sonner'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -53,7 +54,6 @@ export function PassDetail() {
   const gateCloses = d.toLocaleString('en-US', {
     month: 'short',
     day: 'numeric',
-    year: 'numeric',
     hour: 'numeric',
     minute: '2-digit',
   })
@@ -83,6 +83,7 @@ export function PassDetail() {
               className="cursor-pointer font-normal text-base whitespace-nowrap px-3 py-2"
               onClick={() => {
                 removePass(pass.id)
+                toast.success('Boarding pass removed')
                 void navigate('/')
               }}
             >
@@ -95,7 +96,7 @@ export function PassDetail() {
 
       <div
         className="w-full rounded-3xl shadow-2xl overflow-hidden flex flex-col"
-        style={{ backgroundColor: '#25418F' }}
+        style={{ backgroundColor: pass.theme.backgroundColor }}
       >
         <div className="p-6">
           <div className="flex justify-between items-center mb-5">
