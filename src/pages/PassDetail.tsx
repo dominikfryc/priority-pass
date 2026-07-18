@@ -1,10 +1,11 @@
-import { useEffect } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { useParams, useNavigate, Link } from 'react-router-dom'
 import { usePassStore } from '../store/usePassStore'
 import { BarcodeRenderer } from '../components/BarcodeRenderer'
-import { MdArrowBack, MdFlight, MdMoreVert, MdDelete } from 'react-icons/md'
+import { MdArrowBack, MdFlight, MdMoreVert, MdDelete, MdEdit } from 'react-icons/md'
 import { formatPassengerName } from '../lib/formatName'
-import { toast } from 'sonner'
+import { EditPassDialog } from '../components/EditPassDialog'
+import { RemovePassDialog } from '../components/RemovePassDialog'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,7 +16,9 @@ import {
 export function PassDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { passes, removePass } = usePassStore()
+  const { passes } = usePassStore()
+  const [editOpen, setEditOpen] = useState(false)
+  const [deleteOpen, setDeleteOpen] = useState(false)
 
   const pass = passes.find((p) => p.id === id)
 
@@ -49,15 +52,12 @@ export function PassDetail() {
   const passengerName = formatPassengerName(pass.passengerName)
   const seat = (pass.seatNumber || '').replace(/^0/, '')
   const sequence = (pass.checkInSequenceNumber || '').replace(/^0/, '')
-  const d = new Date(pass.flightDate)
-  d.setMinutes(d.getMinutes() - 30)
-  const gateCloses = d.toLocaleString('en-US', {
+  const gateCloses = new Date(pass.flightDate).toLocaleString('en-US', {
     month: 'short',
     day: 'numeric',
     hour: 'numeric',
     minute: '2-digit',
   })
-
   const seatRowMatch = seat?.match(/\d+/)
   const seatRow = seatRowMatch ? parseInt(seatRowMatch[0], 10) : 0
   const boardingDoor = seatRow >= 17 ? 'Back' : 'Front'
@@ -65,29 +65,33 @@ export function PassDetail() {
   return (
     <div className="grid px-4 py-8 gap-6 font-sans text-white">
       <div className="flex justify-between items-center">
-        <button
-          onClick={() => {
-            void navigate('/')
+        <Link
+          to="/"
+          onClick={(e) => {
+            if (document.startViewTransition) {
+              e.preventDefault()
+              document.startViewTransition({
+                update: () => void navigate('/'),
+                types: ['backward'],
+              })
+            }
           }}
-          className="text-white p-2 cursor-pointer w-fit"
+          className="p-3 cursor-pointer w-fit rounded-full outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-background block"
         >
           <MdArrowBack className="w-6 h-6" />
-        </button>
+        </Link>
 
         <DropdownMenu>
-          <DropdownMenuTrigger className="text-white p-2 cursor-pointer w-fit">
+          <DropdownMenuTrigger className="p-2 cursor-pointer w-fit rounded-full outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-background">
             <MdMoreVert className="w-6 h-6" />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-max">
-            <DropdownMenuItem
-              className="cursor-pointer font-normal text-base whitespace-nowrap px-3 py-2"
-              onClick={() => {
-                removePass(pass.id)
-                toast.success('Boarding pass removed')
-                void navigate('/')
-              }}
-            >
-              <MdDelete className="mr-3 size-5" />
+            <DropdownMenuItem onClick={() => setEditOpen(true)}>
+              <MdEdit className="size-5" />
+              <span>Edit pass</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setDeleteOpen(true)}>
+              <MdDelete className="size-5" />
               <span>Remove pass</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -96,7 +100,10 @@ export function PassDetail() {
 
       <div
         className="w-full rounded-3xl shadow-2xl overflow-hidden flex flex-col"
-        style={{ backgroundColor: pass.theme.backgroundColor }}
+        style={{
+          backgroundColor: pass.theme.backgroundColor,
+          color: pass.theme.foregroundColor,
+        }}
       >
         <div className="p-6">
           <div className="flex justify-between items-center mb-5">
@@ -110,8 +117,8 @@ export function PassDetail() {
                   />
                 </div>
               ) : (
-                <div className="w-8 h-8 rounded-full border-[1.5px] border-white/30 flex items-center justify-center shrink-0">
-                  <MdFlight className="w-4.5 h-4.5 rotate-90 text-white opacity-70" />
+                <div className="w-8 h-8 rounded-full border-[1.5px] border-current opacity-70 flex items-center justify-center shrink-0">
+                  <MdFlight className="w-4.5 h-4.5 rotate-90" />
                 </div>
               )}
               <span className="font-normal text-md">
@@ -122,8 +129,8 @@ export function PassDetail() {
           </div>
 
           <div
-            className="h-px w-full bg-white/10 mb-6 -mx-6 px-12"
-            style={{ width: 'calc(100% + 48px)' }}
+            className="h-px w-full mb-6 -mx-6 px-12 opacity-20"
+            style={{ width: 'calc(100% + 48px)', backgroundColor: pass.theme.foregroundColor }}
           />
 
           {/* Route Section */}
@@ -151,8 +158,8 @@ export function PassDetail() {
           </div>
 
           <div
-            className="h-px w-full bg-white/10 mb-6 -mx-6 px-12"
-            style={{ width: 'calc(100% + 48px)' }}
+            className="h-px w-full mb-6 -mx-6 px-12 opacity-20"
+            style={{ width: 'calc(100% + 48px)', backgroundColor: pass.theme.foregroundColor }}
           />
 
           {/* Grid 2 */}
@@ -180,6 +187,9 @@ export function PassDetail() {
           </div>
         </div>
       </div>
+
+      <EditPassDialog pass={pass} open={editOpen} onOpenChange={setEditOpen} />
+      <RemovePassDialog passId={pass.id} open={deleteOpen} onOpenChange={setDeleteOpen} />
     </div>
   )
 }

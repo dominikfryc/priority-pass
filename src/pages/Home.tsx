@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { usePassStore } from '../store/usePassStore'
 import { PassCard } from '../components/PassCard'
 import { MdAirplaneTicket } from 'react-icons/md'
-import { UploadDialog } from '../components/UploadDialog'
+import { AddPassDialog } from '../components/AddPassDialog'
 
 export function Home() {
   const { passes } = usePassStore()
@@ -25,18 +25,20 @@ export function Home() {
           </div>
           <h2 className="text-2xl font-normal mb-2">No passes yet</h2>
           <p className="text-muted-foreground max-w-sm">
-            Add a screenshot of your boarding pass with an Aztec barcode to get started.
+            Add a screenshot of your boarding pass with a barcode to get started.
           </p>
         </div>
       ) : (
         <div className="grid gap-2">
-          {passes.map((pass) => (
-            <PassCard key={pass.id} pass={pass} />
-          ))}
+          {[...passes]
+            .sort((a, b) => new Date(b.flightDate).getTime() - new Date(a.flightDate).getTime())
+            .map((pass) => (
+              <PassCard key={pass.id} pass={pass} />
+            ))}
         </div>
       )}
 
-      <UploadDialog />
+      <AddPassDialog />
     </div>
   )
 }

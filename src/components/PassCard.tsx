@@ -1,11 +1,10 @@
 import type { BoardingPass } from '../store/usePassStore'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { formatPassengerName } from '../lib/formatName'
 import { MdFlight } from 'react-icons/md'
 
 export function PassCard({ pass }: { pass: BoardingPass }) {
   const navigate = useNavigate()
-
   const origin = pass.departureAirport || ''
   const destination = pass.arrivalAirport || ''
   const passengerName = formatPassengerName(pass.passengerName)
@@ -15,10 +14,23 @@ export function PassCard({ pass }: { pass: BoardingPass }) {
     : ''
 
   return (
-    <div
-      className="cursor-pointer bg-card rounded-3xl overflow-hidden flex gap-4 items-center p-5"
-      onClick={() => {
-        void navigate(`/pass/${pass.id}`)
+    <Link
+      to={`/pass/${pass.id}`}
+      onClick={(e) => {
+        if (document.startViewTransition) {
+          e.preventDefault()
+          document.startViewTransition({
+            update: () => void navigate(`/pass/${pass.id}`),
+            types: ['forward'],
+          })
+        }
+      }}
+      className="cursor-pointer bg-card rounded-3xl overflow-hidden flex gap-4 items-center p-5 outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-background text-left w-full"
+      onKeyDown={(e) => {
+        if (e.key === ' ') {
+          e.preventDefault()
+          e.currentTarget.click()
+        }
       }}
     >
       {pass.airlineLogoUrl ? (
@@ -42,6 +54,6 @@ export function PassCard({ pass }: { pass: BoardingPass }) {
           {passengerName}, {date}
         </div>
       </div>
-    </div>
+    </Link>
   )
 }

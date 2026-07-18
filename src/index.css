@@ -85,5 +85,98 @@
 
   html {
     @apply font-sans;
+    color-scheme: dark;
+  }
+}
+
+@keyframes m3-shared-x-out {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-30px);
+  }
+}
+
+@keyframes m3-shared-x-in {
+  from {
+    transform: translateX(30px);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes m3-shared-x-out-reverse {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(30px);
+  }
+}
+
+@keyframes m3-shared-x-in-reverse {
+  from {
+    transform: translateX(-30px);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes m3-fade-out {
+  0% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes m3-fade-in {
+  0% {
+    opacity: 0;
+  }
+  40% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.3s;
+  animation-fill-mode: both;
+}
+
+html:active-view-transition-type(forward)::view-transition-old(root) {
+  animation-name: m3-shared-x-out, m3-fade-out;
+  animation-timing-function: cubic-bezier(0.2, 0, 0, 1), linear;
+}
+html:active-view-transition-type(forward)::view-transition-new(root) {
+  animation-name: m3-shared-x-in, m3-fade-in;
+  animation-timing-function: cubic-bezier(0.2, 0, 0, 1), linear;
+}
+
+html:active-view-transition-type(backward)::view-transition-old(root) {
+  animation-name: m3-shared-x-out-reverse, m3-fade-out;
+  animation-timing-function: cubic-bezier(0.2, 0, 0, 1), linear;
+  z-index: 2;
+}
+html:active-view-transition-type(backward)::view-transition-new(root) {
+  animation-name: m3-shared-x-in-reverse, m3-fade-in;
+  animation-timing-function: cubic-bezier(0.2, 0, 0, 1), linear;
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(root) {
+    animation: none !important;
   }
 }

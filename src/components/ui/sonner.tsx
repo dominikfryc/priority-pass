@@ -1,7 +1,13 @@
 import { useTheme } from 'next-themes'
 import { Toaster as Sonner, type ToasterProps, toast } from 'sonner'
 import { useEffect } from 'react'
-import { MdCheck, MdInfo, MdWarning, MdError, MdAutorenew } from 'react-icons/md'
+import {
+  MdAutorenew,
+  MdOutlineErrorOutline,
+  MdCheck,
+  MdInfoOutline,
+  MdWarningAmber,
+} from 'react-icons/md'
 
 const Toaster = ({ ...props }: ToasterProps) => {
   const { theme = 'system' } = useTheme()
@@ -23,16 +29,16 @@ const Toaster = ({ ...props }: ToasterProps) => {
       theme={theme as ToasterProps['theme']}
       className="toaster group"
       icons={{
-        success: <MdCheck className="size-4" />,
-        info: <MdInfo className="size-4" />,
-        warning: <MdWarning className="size-4" />,
-        error: <MdError className="size-4" />,
-        loading: <MdAutorenew className="size-4 animate-spin" />,
+        success: <MdCheck className="size-5" />,
+        info: <MdInfoOutline className="size-5" />,
+        warning: <MdWarningAmber className="size-5" />,
+        error: <MdOutlineErrorOutline className="size-5" />,
+        loading: <MdAutorenew className="size-5 animate-spin" />,
       }}
       toastOptions={{
         classNames: {
           toast:
-            'group toast group-[.toaster]:!bg-white/90 group-[.toaster]:!backdrop-blur-md group-[.toaster]:!text-zinc-950 group-[.toaster]:!border-none group-[.toaster]:!rounded-full group-[.toaster]:!shadow-lg group-[.toaster]:!py-4 group-[.toaster]:!px-6',
+            'group leading-none toast group-[.toaster]:!bg-white/90 group-[.toaster]:!backdrop-blur-md group-[.toaster]:!text-zinc-950 group-[.toaster]:!border-none group-[.toaster]:!rounded-full group-[.toaster]:!shadow-lg group-[.toaster]:!py-4 group-[.toaster]:!px-6',
           error:
             'group-[.toaster]:!bg-white/90 group-[.toaster]:!text-zinc-950 group-[.toaster]:!border-none group-[.toaster]:!rounded-full group-[.toaster]:!py-4 group-[.toaster]:!px-6',
           success:
