@@ -33,7 +33,7 @@ export function PassDetail() {
     if (pass) {
       document.title = `${pass.departureAirport} to ${pass.arrivalAirport}`
     } else {
-      document.title = 'Pass Not Found'
+      document.title = 'Pass not found'
     }
   }, [pass])
 

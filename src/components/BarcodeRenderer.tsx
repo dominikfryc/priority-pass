@@ -25,8 +25,8 @@ export function BarcodeRenderer({ data, className = '' }: BarcodeRendererProps) 
   }, [data])
 
   return (
-    <div className={`flex justify-center p-[18px] bg-[#f2f2f2] rounded-[24px] ${className}`}>
-      <canvas ref={canvasRef} className="max-w-full h-auto w-[180px]" />
+    <div className={`flex justify-center p-4.5 bg-foreground rounded-3xl ${className}`}>
+      <canvas ref={canvasRef} className="max-w-full h-auto w-45" />
     </div>
   )
 }

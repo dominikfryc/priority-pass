@@ -39,10 +39,10 @@ export default defineConfig({
       },
       manifest: {
         name: 'Priority Pass',
-        short_name: 'Priority Pass',
+        short_name: 'PriorityPass',
         description: 'Manage your boarding passes',
-        theme_color: '#0a0a0a',
-        background_color: '#0a0a0a',
+        theme_color: '#141414',
+        background_color: '#141414',
         display: 'standalone',
         orientation: 'portrait',
         share_target: {
