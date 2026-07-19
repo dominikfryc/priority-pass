@@ -106,9 +106,13 @@ export function AddPassDialog() {
     }[]
     if (airlineLogoUrl) {
       try {
-        const proxiedUrl = airlineLogoUrl
-          .replace('https://images.kiwi.com', `${import.meta.env.BASE_URL}kiwi-images`)
-          .replace('/airlines/64/', '/airlines/64x64/')
+        const targetLogoUrl = airlineLogoUrl.replace('/airlines/64/', '/airlines/64x64/')
+        const proxiedUrl = import.meta.env.DEV
+          ? targetLogoUrl.replace(
+              'https://images.kiwi.com',
+              `${import.meta.env.BASE_URL}kiwi-images`,
+            )
+          : `https://api.allorigins.win/raw?url=${encodeURIComponent(targetLogoUrl)}`
         const vibrantPallete = await Vibrant.from(proxiedUrl).getPalette()
 
         theme.backgroundColor = vibrantPallete.DarkVibrant?.hex || '#ffffff'
