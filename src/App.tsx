@@ -17,7 +17,7 @@ const router = createBrowserRouter(
     },
   ],
   {
-    basename: import.meta.env.BASE_URL,
+    basename: import.meta.env.BASE_URL.replace(/\/$/, ''),
   },
 )
 
@@ -48,7 +48,7 @@ function App() {
           if (file) {
             usePassStore.getState().setSharedFile(file)
             // Remove the query param without reloading
-            window.history.replaceState({}, '', '/')
+            window.history.replaceState({}, '', import.meta.env.BASE_URL)
           }
         } catch (error) {
           console.error(error)

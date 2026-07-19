@@ -72,8 +72,8 @@ export function AddPassDialog() {
 
     try {
       const [airlinesRes, airportsRes] = await Promise.all([
-        fetch('/airlines.json'),
-        fetch('/airports.json'),
+        fetch(`${import.meta.env.BASE_URL}airlines.json`),
+        fetch(`${import.meta.env.BASE_URL}airports.json`),
       ])
       const airlines = (await airlinesRes.json()) as Record<string, { name: string; logo: string }>
       const airports = (await airportsRes.json()) as Record<string, string>
@@ -107,7 +107,7 @@ export function AddPassDialog() {
     if (airlineLogoUrl) {
       try {
         const proxiedUrl = airlineLogoUrl
-          .replace('https://images.kiwi.com', '/kiwi-images')
+          .replace('https://images.kiwi.com', `${import.meta.env.BASE_URL}kiwi-images`)
           .replace('/airlines/64/', '/airlines/64x64/')
         const vibrantPallete = await Vibrant.from(proxiedUrl).getPalette()
 

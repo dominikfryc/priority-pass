@@ -4,16 +4,20 @@ import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 import { fileURLToPath, URL } from 'node:url'
 
+const basePath = process.env.VITE_BASE_PATH || '/'
+
 export default defineConfig({
-  base: process.env.VITE_BASE_PATH || '/',
+  base: basePath,
   plugins: [
     react(),
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
       workbox: {
-        importScripts: ['/share-target-sw.js'],
-        navigateFallback: '/index.html',
+        importScripts: [
+          `${basePath === '/' ? '' : basePath.replace(/\/$/, '')}/share-target-sw.js`,
+        ],
+        navigateFallback: `${basePath === '/' ? '' : basePath.replace(/\/$/, '')}/index.html`,
         cleanupOutdatedCaches: true,
         globPatterns: ['**/*.{js,css,html,ico,png,svg,json,woff2}'],
         runtimeCaching: [
@@ -42,7 +46,7 @@ export default defineConfig({
         display: 'standalone',
         orientation: 'portrait',
         share_target: {
-          action: '/share-target',
+          action: `${basePath === '/' ? '' : basePath.replace(/\/$/, '')}/share-target`,
           method: 'POST',
           enctype: 'multipart/form-data',
           params: {
@@ -56,13 +60,13 @@ export default defineConfig({
         },
         icons: [
           {
-            src: '/icon.svg',
+            src: `${basePath === '/' ? '' : basePath.replace(/\/$/, '')}/icon.svg`,
             sizes: 'any',
             type: 'image/svg+xml',
             purpose: 'any maskable',
           },
           {
-            src: '/icon.png',
+            src: `${basePath === '/' ? '' : basePath.replace(/\/$/, '')}/icon.png`,
             sizes: '512x512',
             type: 'image/png',
           },
