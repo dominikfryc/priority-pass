@@ -13,6 +13,7 @@ import { toast } from 'sonner'
 import ReactCrop, { type Crop, type PixelCrop, centerCrop, makeAspectCrop } from 'react-image-crop'
 import 'react-image-crop/dist/ReactCrop.css'
 import { Vibrant } from 'node-vibrant/browser'
+import { expandHex } from '../lib/expandHex'
 
 export function AddPassDialog() {
   const [open, setOpen] = useState(false)
@@ -115,32 +116,32 @@ export function AddPassDialog() {
           : `https://api.allorigins.win/raw?url=${encodeURIComponent(targetLogoUrl)}`
         const vibrantPallete = await Vibrant.from(proxiedUrl).getPalette()
 
-        theme.backgroundColor = vibrantPallete.DarkVibrant?.hex || '#ffffff'
-        theme.foregroundColor = vibrantPallete.DarkVibrant?.titleTextColor || '#000000'
+        theme.backgroundColor = expandHex(vibrantPallete.DarkVibrant?.hex, '#ffffff')
+        theme.foregroundColor = expandHex(vibrantPallete.DarkVibrant?.titleTextColor, '#000000')
         palette = [
           {
-            backgroundColor: vibrantPallete.DarkVibrant?.hex || '#ffffff',
-            foregroundColor: vibrantPallete.DarkVibrant?.titleTextColor || '#000000',
+            backgroundColor: expandHex(vibrantPallete.DarkVibrant?.hex, '#ffffff'),
+            foregroundColor: expandHex(vibrantPallete.DarkVibrant?.titleTextColor, '#000000'),
           },
           {
-            backgroundColor: vibrantPallete.Vibrant?.hex || '#ffffff',
-            foregroundColor: vibrantPallete.Vibrant?.titleTextColor || '#000000',
+            backgroundColor: expandHex(vibrantPallete.Vibrant?.hex, '#ffffff'),
+            foregroundColor: expandHex(vibrantPallete.Vibrant?.titleTextColor, '#000000'),
           },
           {
-            backgroundColor: vibrantPallete.LightVibrant?.hex || '#ffffff',
-            foregroundColor: vibrantPallete.LightVibrant?.titleTextColor || '#000000',
+            backgroundColor: expandHex(vibrantPallete.LightVibrant?.hex, '#ffffff'),
+            foregroundColor: expandHex(vibrantPallete.LightVibrant?.titleTextColor, '#000000'),
           },
           {
-            backgroundColor: vibrantPallete.Muted?.hex || '#ffffff',
-            foregroundColor: vibrantPallete.Muted?.titleTextColor || '#000000',
+            backgroundColor: expandHex(vibrantPallete.Muted?.hex, '#ffffff'),
+            foregroundColor: expandHex(vibrantPallete.Muted?.titleTextColor, '#000000'),
           },
           {
-            backgroundColor: vibrantPallete.DarkMuted?.hex || '#ffffff',
-            foregroundColor: vibrantPallete.DarkMuted?.titleTextColor || '#000000',
+            backgroundColor: expandHex(vibrantPallete.DarkMuted?.hex, '#ffffff'),
+            foregroundColor: expandHex(vibrantPallete.DarkMuted?.titleTextColor, '#000000'),
           },
           {
-            backgroundColor: vibrantPallete.LightMuted?.hex || '#ffffff',
-            foregroundColor: vibrantPallete.LightMuted?.titleTextColor || '#000000',
+            backgroundColor: expandHex(vibrantPallete.LightMuted?.hex, '#ffffff'),
+            foregroundColor: expandHex(vibrantPallete.LightMuted?.titleTextColor, '#000000'),
           },
         ]
       } catch (err) {

@@ -5,6 +5,7 @@ import { Input } from './ui/input'
 import { Label } from './ui/label'
 import { usePassStore, type BoardingPass } from '../store/usePassStore'
 import { toast } from 'sonner'
+import { expandHex } from '../lib/expandHex'
 
 interface EditPassDialogProps {
   pass: BoardingPass
@@ -144,7 +145,7 @@ export function EditPassDialog({ pass, open, onOpenChange }: EditPassDialogProps
                 <div className="relative w-full h-10">
                   <Input
                     type="color"
-                    value={formData.theme.backgroundColor}
+                    value={expandHex(formData.theme.backgroundColor, '#ffffff')}
                     onChange={(e) => handleThemeChange('backgroundColor', e.target.value)}
                     className="peer w-full h-full p-0 border-none! ring-0! cursor-pointer overflow-hidden appearance-none [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:border-none [&::-moz-color-swatch]:border-none"
                   />
@@ -156,7 +157,7 @@ export function EditPassDialog({ pass, open, onOpenChange }: EditPassDialogProps
                 <div className="relative w-full h-10">
                   <Input
                     type="color"
-                    value={formData.theme.foregroundColor}
+                    value={expandHex(formData.theme.foregroundColor, '#000000')}
                     onChange={(e) => handleThemeChange('foregroundColor', e.target.value)}
                     className="peer w-full h-full p-0 border-none! ring-0! cursor-pointer overflow-hidden appearance-none [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:border-none [&::-moz-color-swatch]:border-none"
                   />
