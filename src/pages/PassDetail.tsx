@@ -2,7 +2,14 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { usePassStore } from '../store/usePassStore'
 import { BarcodeRenderer } from '../components/BarcodeRenderer'
-import { MdArrowBack, MdFlight, MdMoreVert, MdDelete, MdEdit } from 'react-icons/md'
+import {
+  MdArrowBack,
+  MdFlight,
+  MdMoreVert,
+  MdAirplaneTicket,
+  MdOutlineEdit,
+  MdDeleteOutline,
+} from 'react-icons/md'
 import { formatPassengerName } from '../lib/formatName'
 import { EditPassDialog } from '../components/EditPassDialog'
 import { RemovePassDialog } from '../components/RemovePassDialog'
@@ -32,16 +39,20 @@ export function PassDetail() {
 
   if (!pass) {
     return (
-      <div className="min-h-screen flex items-center justify-center flex-col gap-4">
-        <p className="text-muted-foreground text-lg">Pass not found</p>
-        <button
-          className="border px-4 py-2 rounded-md cursor-pointer"
-          onClick={() => {
-            void navigate('/')
-          }}
+      <div className="flex flex-col items-center justify-center h-svh text-center">
+        <div className="bg-muted p-6 rounded-full mb-6">
+          <MdAirplaneTicket className="w-12 h-12 text-muted-foreground opacity-50" />
+        </div>
+        <h2 className="text-2xl font-normal mb-2">Pass not found</h2>
+        <p className="text-muted-foreground max-w-xs mb-6">
+          The pass you are looking for does not exist or has been removed.
+        </p>
+        <Link
+          className="whitespace-nowrap flex items-center justify-center rounded-full shadow-lg h-14 px-6 gap-2 text-base font-medium bg-primary text-primary-foreground outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          to="/"
         >
-          Return Home
-        </button>
+          Return to home
+        </Link>
       </div>
     )
   }
@@ -63,7 +74,7 @@ export function PassDetail() {
   const boardingDoor = seatRow >= 17 ? 'Back' : 'Front'
 
   return (
-    <div className="grid px-4 py-8 gap-6 font-sans text-white">
+    <div className="grid p-4 gap-4 font-sans text-white">
       <div className="flex justify-between items-center">
         <Link
           to="/"
@@ -87,11 +98,11 @@ export function PassDetail() {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-max">
             <DropdownMenuItem onClick={() => setEditOpen(true)}>
-              <MdEdit className="size-5" />
+              <MdOutlineEdit className="size-5" />
               <span>Edit pass</span>
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => setDeleteOpen(true)}>
-              <MdDelete className="size-5" />
+              <MdDeleteOutline className="size-5" />
               <span>Remove pass</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -121,11 +132,11 @@ export function PassDetail() {
                   <MdFlight className="w-4.5 h-4.5 rotate-90" />
                 </div>
               )}
-              <span className="font-normal text-md">
+              <span className="font-medium text-md">
                 {pass.airlineName || pass.operatingCarrierDesignator}
               </span>
             </div>
-            <span className="font-normal text-md">{flightNumber}</span>
+            <span className="font-medium text-md">{flightNumber}</span>
           </div>
 
           <div
@@ -135,7 +146,7 @@ export function PassDetail() {
 
           {/* Route Section */}
           <div className="mb-8">
-            <div className="text-md font-normal opacity-90 mb-2">
+            <div className="text-md font-medium opacity-90 mb-2">
               {pass.departureCity} to {pass.arrivalCity}
             </div>
             <div className="flex items-center gap-3 text-5xl font-normal">
@@ -146,31 +157,31 @@ export function PassDetail() {
           </div>
 
           {/* Grid 1 */}
-          <div className="flex justify-between mb-8">
+          <div className="flex justify-between">
             <div>
               <div className="text-sm font-normal opacity-90">Boarding Door</div>
-              <div className="font-normal text-md">{boardingDoor}</div>
+              <div className="font-medium text-md">{boardingDoor}</div>
             </div>
             <div className="text-right">
               <div className="text-sm font-normal opacity-90">Gate Closes</div>
-              <div className="font-normal text-md">{gateCloses}</div>
+              <div className="font-medium text-md">{gateCloses}</div>
             </div>
           </div>
 
           <div
-            className="h-px w-full mb-6 -mx-6 px-12 opacity-20"
-            style={{ width: 'calc(100% + 48px)', backgroundColor: pass.theme.foregroundColor }}
+            className="h-px w-full my-4 px-12 opacity-20 mx-auto"
+            style={{ backgroundColor: pass.theme.foregroundColor }}
           />
 
           {/* Grid 2 */}
           <div className="flex justify-between mb-8">
             <div>
               <div className="text-sm font-light opacity-90">Passenger</div>
-              <div className="font-normal text-md">{passengerName}</div>
+              <div className="font-medium text-md">{passengerName}</div>
             </div>
             <div className="text-right">
               <div className="text-sm font-light opacity-90">Sequence / Seat</div>
-              <div className="font-normal text-md">
+              <div className="font-medium text-md">
                 {sequence} / {seat}
               </div>
             </div>

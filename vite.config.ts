@@ -79,13 +79,4 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
-  server: {
-    proxy: {
-      '/kiwi-images': {
-        target: 'https://images.kiwi.com',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/kiwi-images/, ''),
-      },
-    },
-  },
 })

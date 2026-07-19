@@ -14,6 +14,7 @@ import ReactCrop, { type Crop, type PixelCrop, centerCrop, makeAspectCrop } from
 import 'react-image-crop/dist/ReactCrop.css'
 import { Vibrant } from 'node-vibrant/browser'
 import { expandHex } from '../lib/expandHex'
+import { generateUUID } from '../lib/utils'
 
 export function AddPassDialog() {
   const [open, setOpen] = useState(false)
@@ -108,12 +109,7 @@ export function AddPassDialog() {
     if (airlineLogoUrl) {
       try {
         const targetLogoUrl = airlineLogoUrl.replace('/airlines/64/', '/airlines/64x64/')
-        const proxiedUrl = import.meta.env.DEV
-          ? targetLogoUrl.replace(
-              'https://images.kiwi.com',
-              `${import.meta.env.BASE_URL}kiwi-images`,
-            )
-          : `https://api.allorigins.win/raw?url=${encodeURIComponent(targetLogoUrl)}`
+        const proxiedUrl = `https://wsrv.nl/?url=${encodeURIComponent(targetLogoUrl.replace(/^https?:\/\//, ''))}`
         const vibrantPallete = await Vibrant.from(proxiedUrl).getPalette()
 
         theme.backgroundColor = expandHex(vibrantPallete.DarkVibrant?.hex, '#ffffff')
@@ -150,7 +146,7 @@ export function AddPassDialog() {
     }
 
     const parsedPass = {
-      id: crypto.randomUUID(),
+      id: generateUUID(),
       passengerName: decoded.data?.passengerName || '',
       operatingCarrierPNR: leg?.operatingCarrierPNR || '',
       departureAirport: leg?.departureAirport || '',
@@ -360,7 +356,7 @@ export function AddPassDialog() {
                     onChange={(c) => setCrop(c)}
                     onComplete={(c) => setCompletedCrop(c)}
                     aspect={1}
-                    className="h-fit max-h-[calc(100vh-13rem)]"
+                    className="h-fit max-h-[calc(100svh-13rem)]"
                   >
                     <img
                       ref={imageRef}

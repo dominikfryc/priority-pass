@@ -5,6 +5,20 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Priority Pass</title>
+    <style>
+      body {
+        opacity: 0;
+        transition: opacity 0.1s ease-in;
+      }
+      body.fonts-loaded {
+        opacity: 1;
+      }
+    </style>
+    <script>
+      document.fonts.ready.then(() => {
+        document.body.classList.add('fonts-loaded')
+      })
+    </script>
   </head>
   <body>
     <div id="root"></div>

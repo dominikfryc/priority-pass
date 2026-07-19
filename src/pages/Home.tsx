@@ -19,12 +19,12 @@ export function Home() {
       </header>
 
       {passes.length === 0 ? (
-        <div className="flex flex-col items-center justify-center h-[50vh] text-center">
+        <div className="flex flex-col items-center justify-center h-[50svh] text-center">
           <div className="bg-muted p-6 rounded-full mb-6">
             <MdAirplaneTicket className="w-12 h-12 text-muted-foreground opacity-50" />
           </div>
           <h2 className="text-2xl font-normal mb-2">No passes yet</h2>
-          <p className="text-muted-foreground max-w-sm">
+          <p className="text-muted-foreground max-w-xs">
             Add a screenshot of your boarding pass with a barcode to get started.
           </p>
         </div>

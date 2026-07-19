@@ -3,11 +3,11 @@
 @import 'shadcn/tailwind.css';
 
 :root {
-  --background: oklch(0.145 0 0);
+  --background: oklch(0.19 0 0);
   --foreground: oklch(0.985 0 0);
-  --card: oklch(0.305 0 0);
+  --card: oklch(0.24 0 0);
   --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
+  --popover: oklch(0.24 0 0);
   --popover-foreground: oklch(0.985 0 0);
   --primary: oklch(0.922 0 0);
   --primary-foreground: oklch(0.205 0 0);
@@ -179,4 +179,10 @@ html:active-view-transition-type(backward)::view-transition-new(root) {
   ::view-transition-group(root) {
     animation: none !important;
   }
+}
+
+/* Override Sonner hiding stacked toast content, but exclude the close button */
+[data-sonner-toast][data-expanded='false'][data-front='false'][data-styled='true'] > [data-content],
+[data-sonner-toast][data-expanded='false'][data-front='false'][data-styled='true'] > [data-icon] {
+  opacity: 1 !important;
 }

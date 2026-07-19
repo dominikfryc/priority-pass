@@ -42,15 +42,15 @@ export function PassCard({ pass }: { pass: BoardingPass }) {
           />
         </div>
       ) : (
-        <div className="w-12 h-12 rounded-full bg-blue-700 flex items-center justify-center shrink-0">
-          <MdFlight className="w-6 h-6 text-white" />
+        <div className="w-12 h-12 rounded-full flex items-center justify-center shrink-0">
+          <MdFlight className="w-6 h-6 text-white rotate-90" />
         </div>
       )}
       <div className="grid gap-1">
-        <div className="font-normal text-md">
+        <div className="font-medium text-md">
           {origin} to {destination}
         </div>
-        <div className="text-sm text-muted-foreground font-medium">
+        <div className="text-sm text-muted-foreground font-normal">
           {passengerName}, {date}
         </div>
       </div>
