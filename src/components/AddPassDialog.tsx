@@ -108,9 +108,8 @@ export function AddPassDialog() {
     }[]
     if (airlineLogoUrl) {
       try {
-        const targetLogoUrl = airlineLogoUrl.replace('/airlines/64/', '/airlines/64x64/')
-        const proxiedUrl = `https://wsrv.nl/?url=${encodeURIComponent(targetLogoUrl.replace(/^https?:\/\//, ''))}`
-        const vibrantPallete = await Vibrant.from(proxiedUrl).getPalette()
+        const targetLogoUrl = `${import.meta.env.BASE_URL}${airlineLogoUrl.replace(/^\//, '')}`
+        const vibrantPallete = await Vibrant.from(targetLogoUrl).getPalette()
 
         theme.backgroundColor = expandHex(vibrantPallete.DarkVibrant?.hex, '#ffffff')
         theme.foregroundColor = expandHex(vibrantPallete.DarkVibrant?.titleTextColor, '#000000')

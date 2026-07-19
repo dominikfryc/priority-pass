@@ -1,7 +1,8 @@
 import type { BoardingPass } from '../store/usePassStore'
 import { Link, useNavigate } from 'react-router-dom'
 import { formatPassengerName } from '../lib/formatName'
-import { MdFlight } from 'react-icons/md'
+import { getLocalImageUrl } from '../lib/utils'
+import { MdAirplaneTicket } from 'react-icons/md'
 
 export function PassCard({ pass }: { pass: BoardingPass }) {
   const navigate = useNavigate()
@@ -33,19 +34,17 @@ export function PassCard({ pass }: { pass: BoardingPass }) {
         }
       }}
     >
-      {pass.airlineLogoUrl ? (
-        <div className="w-12 h-12 rounded-full border border-white/50 flex items-center justify-center shrink-0 overflow-hidden">
+      <div className="w-12 h-12 rounded-full bg-foreground ring-1 ring-white/30 flex items-center justify-center shrink-0 overflow-hidden">
+        {pass.airlineLogoUrl ? (
           <img
-            src={pass.airlineLogoUrl}
+            src={getLocalImageUrl(pass.airlineLogoUrl)}
             alt={pass.airlineName}
             className="w-full h-full object-contain"
           />
-        </div>
-      ) : (
-        <div className="w-12 h-12 rounded-full flex items-center justify-center shrink-0">
-          <MdFlight className="w-6 h-6 text-white rotate-90" />
-        </div>
-      )}
+        ) : (
+          <MdAirplaneTicket className="w-8 h-8 text-background" />
+        )}
+      </div>
       <div className="grid gap-1">
         <div className="font-medium text-md">
           {origin} to {destination}

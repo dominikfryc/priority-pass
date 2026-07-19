@@ -11,6 +11,7 @@ import {
   MdDeleteOutline,
 } from 'react-icons/md'
 import { formatPassengerName } from '../lib/formatName'
+import { getLocalImageUrl } from '../lib/utils'
 import { EditPassDialog } from '../components/EditPassDialog'
 import { RemovePassDialog } from '../components/RemovePassDialog'
 import {
@@ -119,19 +120,17 @@ export function PassDetail() {
         <div className="p-6">
           <div className="flex justify-between items-center mb-5">
             <div className="flex items-center gap-3">
-              {pass.airlineLogoUrl ? (
-                <div className="w-8 h-8 rounded-full border border-white/50 flex items-center justify-center shrink-0 overflow-hidden">
+              <div className="w-8 h-8 rounded-full bg-foreground ring-1 ring-white/30 flex items-center justify-center shrink-0 overflow-hidden">
+                {pass.airlineLogoUrl ? (
                   <img
-                    src={pass.airlineLogoUrl}
+                    src={getLocalImageUrl(pass.airlineLogoUrl)}
                     alt={pass.airlineName}
                     className="w-full h-full object-contain"
                   />
-                </div>
-              ) : (
-                <div className="w-8 h-8 rounded-full border-[1.5px] border-current opacity-70 flex items-center justify-center shrink-0">
-                  <MdFlight className="w-4.5 h-4.5 rotate-90" />
-                </div>
-              )}
+                ) : (
+                  <MdAirplaneTicket className="w-4.5 h-4.5" />
+                )}
+              </div>
               <span className="font-medium text-md">
                 {pass.airlineName || pass.operatingCarrierDesignator}
               </span>
