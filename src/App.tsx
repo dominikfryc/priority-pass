@@ -5,16 +5,21 @@ import { Home } from './pages/Home'
 import { PassDetail } from './pages/PassDetail'
 import { usePassStore } from './store/usePassStore'
 
-const router = createBrowserRouter([
+const router = createBrowserRouter(
+  [
+    {
+      path: '/',
+      element: <Home />,
+    },
+    {
+      path: '/pass/:id',
+      element: <PassDetail />,
+    },
+  ],
   {
-    path: '/',
-    element: <Home />,
+    basename: import.meta.env.BASE_URL,
   },
-  {
-    path: '/pass/:id',
-    element: <PassDetail />,
-  },
-])
+)
 
 function App() {
   useEffect(() => {
