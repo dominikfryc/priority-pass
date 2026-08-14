@@ -77,15 +77,36 @@ export function AddPassDialog() {
         fetch(`${import.meta.env.BASE_URL}airlines.json`),
         fetch(`${import.meta.env.BASE_URL}airports.json`),
       ])
-      const airlines = (await airlinesRes.json()) as Record<string, { name: string; logo: string }>
+      const airlines = (await airlinesRes.json()) as Record<
+        string,
+        { name: string; iata: string; icao?: string }
+      >
       const airports = (await airportsRes.json()) as Record<string, string>
 
-      const foundAirline = leg?.operatingCarrierDesignator
-        ? airlines[leg.operatingCarrierDesignator]
-        : undefined
+      let foundAirline = undefined
+      if (leg?.operatingCarrierDesignator) {
+        const designator = leg.operatingCarrierDesignator.trim()
+
+        if (airlines[designator]) {
+          foundAirline = airlines[designator]
+        } else if (designator.length === 3) {
+          const icaoToIata: Record<string, string> = {}
+          for (const iataKey in airlines) {
+            const icaoCode = airlines[iataKey].icao
+            if (icaoCode && !icaoToIata[icaoCode]) {
+              icaoToIata[icaoCode] = iataKey
+            }
+          }
+          if (icaoToIata[designator]) {
+            foundAirline = airlines[icaoToIata[designator]]
+          }
+        }
+      }
       if (foundAirline) {
         airlineName = foundAirline.name || ''
-        airlineLogoUrl = foundAirline.logo || ''
+        airlineLogoUrl = foundAirline.iata
+          ? `${import.meta.env.BASE_URL}logos/${foundAirline.iata}.png`
+          : ''
       }
 
       if (leg?.departureAirport) {
