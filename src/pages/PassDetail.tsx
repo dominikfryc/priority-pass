@@ -145,12 +145,12 @@ export function PassDetail() {
 
           {/* Route Section */}
           <div className="mb-8">
-            <div className="text-md font-medium opacity-90 mb-2">
+            <div className="text-md font-medium mb-2">
               {pass.departureCity} to {pass.arrivalCity}
             </div>
             <div className="flex items-center gap-3 text-5xl font-normal">
               <span>{originCode}</span>
-              <MdFlight className="w-8 h-8 rotate-90 opacity-90 mx-1" />
+              <MdFlight className="w-8 h-8 rotate-90 mx-1" />
               <span>{destCode}</span>
             </div>
           </div>
@@ -158,11 +158,11 @@ export function PassDetail() {
           {/* Grid 1 */}
           <div className="flex justify-between">
             <div>
-              <div className="text-sm font-normal opacity-90">Boarding Door</div>
+              <div className="text-sm font-normal">Boarding Door</div>
               <div className="font-medium text-md">{boardingDoor}</div>
             </div>
             <div className="text-right">
-              <div className="text-sm font-normal opacity-90">Gate Closes</div>
+              <div className="text-sm font-normal">Gate Closes</div>
               <div className="font-medium text-md">{gateCloses}</div>
             </div>
           </div>
@@ -175,11 +175,11 @@ export function PassDetail() {
           {/* Grid 2 */}
           <div className="flex justify-between mb-8">
             <div>
-              <div className="text-sm font-light opacity-90">Passenger</div>
+              <div className="text-sm font-light">Passenger</div>
               <div className="font-medium text-md">{passengerName}</div>
             </div>
             <div className="text-right">
-              <div className="text-sm font-light opacity-90">Sequence / Seat</div>
+              <div className="text-sm font-light">Sequence / Seat</div>
               <div className="font-medium text-md">
                 {sequence} / {seat}
               </div>
@@ -187,9 +187,7 @@ export function PassDetail() {
           </div>
 
           {/* Subtext */}
-          <div className="text-center text-xs font-light mb-4 mt-6 opacity-90">
-            Priority & 2 Cabin bags
-          </div>
+          <div className="text-center text-xs font-light mb-4 mt-6">Priority & 2 Cabin bags</div>
 
           {/* Barcode */}
           <div className="flex justify-center pb-2">
