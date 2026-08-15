@@ -19,8 +19,8 @@ export function generateUUID(): string {
 
 export function getLocalImageUrl(url: string | undefined): string {
   if (!url) return ''
-  if (url.startsWith('http') || url.startsWith('data:')) {
-    return url
+  if (url.startsWith('/')) {
+    return `${import.meta.env.BASE_URL}${url.replace(/^\//, '')}`
   }
-  return `${import.meta.env.BASE_URL}${url.replace(/^\//, '')}`
+  return url
 }

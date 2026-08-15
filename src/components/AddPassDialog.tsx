@@ -14,7 +14,8 @@ import ReactCrop, { type Crop, type PixelCrop, centerCrop, makeAspectCrop } from
 import 'react-image-crop/dist/ReactCrop.css'
 import { Vibrant } from 'node-vibrant/browser'
 import { expandHex } from '../lib/expandHex'
-import { generateUUID } from '../lib/utils'
+import { generateUUID, getLocalImageUrl } from '../lib/utils'
+import { formatPassengerName } from '../lib/formatName'
 
 export function AddPassDialog() {
   const [open, setOpen] = useState(false)
@@ -104,9 +105,7 @@ export function AddPassDialog() {
       }
       if (foundAirline) {
         airlineName = foundAirline.name || ''
-        airlineLogoUrl = foundAirline.iata
-          ? `${import.meta.env.BASE_URL}logos/${foundAirline.iata}.png`
-          : ''
+        airlineLogoUrl = foundAirline.iata ? `/logos/${foundAirline.iata}.png` : ''
       }
 
       if (leg?.departureAirport) {
@@ -131,7 +130,7 @@ export function AddPassDialog() {
 
     if (airlineLogoUrl) {
       try {
-        const targetLogoUrl = `${import.meta.env.BASE_URL}${airlineLogoUrl.replace(/^\//, '')}`
+        const targetLogoUrl = getLocalImageUrl(airlineLogoUrl)
         vibrantPallete = await Vibrant.from(targetLogoUrl).getPalette()
       } catch (err) {
         console.error('Failed to extract color from logo', err)
@@ -191,15 +190,15 @@ export function AddPassDialog() {
 
     const parsedPass = {
       id: generateUUID(),
-      passengerName: decoded.data?.passengerName || '',
+      passengerName: formatPassengerName(decoded.data?.passengerName || ''),
       operatingCarrierPNR: leg?.operatingCarrierPNR || '',
       departureAirport: leg?.departureAirport || '',
       arrivalAirport: leg?.arrivalAirport || '',
       operatingCarrierDesignator: leg?.operatingCarrierDesignator || '',
       flightNumber: leg?.flightNumber || '',
       flightDate: leg?.flightDate || new Date(),
-      seatNumber: leg?.seatNumber || '',
-      checkInSequenceNumber: leg?.checkInSequenceNumber || '',
+      seatNumber: (leg?.seatNumber || '').replace(/^0+/, ''),
+      checkInSequenceNumber: (leg?.checkInSequenceNumber || '').replace(/^0+/, ''),
       airlineName,
       airlineLogoUrl,
       departureCity,

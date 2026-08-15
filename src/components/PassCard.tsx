@@ -1,6 +1,5 @@
 import type { BoardingPass } from '../store/usePassStore'
 import { Link, useNavigate } from 'react-router-dom'
-import { formatPassengerName } from '../lib/formatName'
 import { getLocalImageUrl } from '../lib/utils'
 import { MdAirplaneTicket } from 'react-icons/md'
 
@@ -8,7 +7,7 @@ export function PassCard({ pass }: { pass: BoardingPass }) {
   const navigate = useNavigate()
   const origin = pass.departureAirport || ''
   const destination = pass.arrivalAirport || ''
-  const passengerName = formatPassengerName(pass.passengerName)
+  const passengerName = pass.passengerName
   const flightDateRaw = pass.flightDate
   const date = flightDateRaw
     ? new Date(flightDateRaw).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })

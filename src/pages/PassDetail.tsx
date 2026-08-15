@@ -10,7 +10,6 @@ import {
   MdOutlineEdit,
   MdDeleteOutline,
 } from 'react-icons/md'
-import { formatPassengerName } from '../lib/formatName'
 import { getLocalImageUrl } from '../lib/utils'
 import { EditPassDialog } from '../components/EditPassDialog'
 import { RemovePassDialog } from '../components/RemovePassDialog'
@@ -59,11 +58,11 @@ export function PassDetail() {
   }
 
   const originCode = pass.departureAirport
-  const destCode = pass.arrivalAirport || ''
+  const destCode = pass.arrivalAirport
   const flightNumber = `${pass.operatingCarrierDesignator || ''} ${pass.flightNumber || ''}`.trim()
-  const passengerName = formatPassengerName(pass.passengerName)
-  const seat = (pass.seatNumber || '').replace(/^0/, '')
-  const sequence = (pass.checkInSequenceNumber || '').replace(/^0/, '')
+  const passengerName = pass.passengerName
+  const seat = pass.seatNumber || ''
+  const sequence = pass.checkInSequenceNumber || ''
   const gateCloses = new Date(pass.flightDate).toLocaleString('en-US', {
     month: 'short',
     day: 'numeric',
@@ -72,7 +71,7 @@ export function PassDetail() {
   })
   const seatRowMatch = seat?.match(/\d+/)
   const seatRow = seatRowMatch ? parseInt(seatRowMatch[0], 10) : 0
-  const boardingDoor = seatRow >= 17 ? 'Back' : 'Front'
+  const boardingDoor = seatRow >= 15 ? 'Back' : 'Front'
 
   return (
     <div className="grid p-4 gap-4 font-sans text-white">

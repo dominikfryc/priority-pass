@@ -72,45 +72,27 @@ export function EditPassDialog({ pass, open, onOpenChange }: EditPassDialogProps
         <div className="flex flex-col gap-4 p-4 overflow-y-auto flex-1">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label className="mb-2">Departure Airport</Label>
-              <Input
-                name="departureAirport"
-                value={formData.departureAirport}
-                onChange={handleChange}
-                maxLength={3}
-              />
-            </div>
-            <div>
-              <Label className="mb-2">Arrival Airport</Label>
-              <Input
-                name="arrivalAirport"
-                value={formData.arrivalAirport}
-                onChange={handleChange}
-                maxLength={3}
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label className="mb-2">Departure City</Label>
-              <Input name="departureCity" value={formData.departureCity} onChange={handleChange} />
-            </div>
-            <div>
-              <Label className="mb-2">Arrival City</Label>
-              <Input name="arrivalCity" value={formData.arrivalCity} onChange={handleChange} />
-            </div>
-          </div>
-
-          <div>
-            <Label className="mb-2">Passenger Name</Label>
-            <Input name="passengerName" value={formData.passengerName} onChange={handleChange} />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
               <Label className="mb-2">Airline Name</Label>
               <Input name="airlineName" value={formData.airlineName} onChange={handleChange} />
+            </div>
+            <div>
+              <Label className="mb-2">Airline Logo URL</Label>
+              <Input
+                name="airlineLogoUrl"
+                value={formData.airlineLogoUrl}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label className="mb-2">Airline Designator</Label>
+              <Input
+                name="operatingCarrierDesignator"
+                value={formData.operatingCarrierDesignator}
+                onChange={handleChange}
+              />
             </div>
             <div>
               <Label className="mb-2">Flight Number</Label>
@@ -118,23 +100,73 @@ export function EditPassDialog({ pass, open, onOpenChange }: EditPassDialogProps
             </div>
           </div>
 
-          <div>
-            <Label className="mb-2">Flight Date & Time</Label>
-            <Input type="datetime-local" value={localIsoString} onChange={handleDateChange} />
+          <div className="border-t pt-4 flex flex-col gap-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label className="mb-2">Departure Airport</Label>
+                <Input
+                  name="departureAirport"
+                  value={formData.departureAirport}
+                  onChange={handleChange}
+                  maxLength={3}
+                />
+              </div>
+              <div>
+                <Label className="mb-2">Arrival Airport</Label>
+                <Input
+                  name="arrivalAirport"
+                  value={formData.arrivalAirport}
+                  onChange={handleChange}
+                  maxLength={3}
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label className="mb-2">Departure City</Label>
+                <Input
+                  name="departureCity"
+                  value={formData.departureCity}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <Label className="mb-2">Arrival City</Label>
+                <Input name="arrivalCity" value={formData.arrivalCity} onChange={handleChange} />
+              </div>
+            </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label className="mb-2">Seat</Label>
-              <Input name="seatNumber" value={formData.seatNumber} onChange={handleChange} />
+          <div className="border-t pt-4 flex flex-col gap-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label className="mb-2">Passenger Name</Label>
+                <Input
+                  name="passengerName"
+                  value={formData.passengerName}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <Label className="mb-2">Boarding Time</Label>
+                <Input type="datetime-local" value={localIsoString} onChange={handleDateChange} />
+              </div>
             </div>
-            <div>
-              <Label className="mb-2">Sequence</Label>
-              <Input
-                name="checkInSequenceNumber"
-                value={formData.checkInSequenceNumber}
-                onChange={handleChange}
-              />
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label className="mb-2">Seat</Label>
+                <Input name="seatNumber" value={formData.seatNumber} onChange={handleChange} />
+              </div>
+              <div>
+                <Label className="mb-2">Sequence</Label>
+                <Input
+                  name="checkInSequenceNumber"
+                  value={formData.checkInSequenceNumber}
+                  onChange={handleChange}
+                />
+              </div>
             </div>
           </div>
 
@@ -170,9 +202,9 @@ export function EditPassDialog({ pass, open, onOpenChange }: EditPassDialogProps
               <div>
                 <Label className="mb-2 block">Color Palette</Label>
                 <div className="flex w-full justify-between gap-2">
-                  {formData.palette.map((color) => (
+                  {formData.palette.map((color, index) => (
                     <button
-                      key={`${color.backgroundColor}-${color.foregroundColor}`}
+                      key={`${color.backgroundColor}-${color.foregroundColor}-${index}`}
                       className={`flex-1 aspect-square max-h-12 max-w-12 rounded-full border shadow-sm flex items-center justify-center transition-transform hover:scale-110 focus-visible:outline-none focus-visible:border-transparent focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
                         formData.theme.backgroundColor === color.backgroundColor
                           ? 'border-transparent ring-2 ring-white'
