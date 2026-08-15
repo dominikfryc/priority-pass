@@ -78,10 +78,12 @@ const Toaster = ({ ...props }: ToasterProps) => {
 
   return (
     <Sonner
+      offset={16}
       closeButton={true}
       swipeDirections={['left', 'right']}
       theme={theme as ToasterProps['theme']}
       className="toaster group"
+      style={{ '--width': 'min(calc(100dvw - 32px), 416px)' } as React.CSSProperties}
       icons={{
         success: <MdCheck className="size-5" />,
         info: <MdInfoOutline className="size-5" />,
@@ -92,19 +94,19 @@ const Toaster = ({ ...props }: ToasterProps) => {
       toastOptions={{
         classNames: {
           toast:
-            'group leading-none toast group-[.toaster]:!bg-white/90 group-[.toaster]:!backdrop-blur-md group-[.toaster]:!text-zinc-950 group-[.toaster]:!border-none group-[.toaster]:!rounded-full group-[.toaster]:!shadow-lg group-[.toaster]:!py-4 group-[.toaster]:!px-6',
+            'group leading-none toast group-[.toaster]:!bg-foreground/90 group-[.toaster]:!backdrop-blur-md group-[.toaster]:!text-background group-[.toaster]:!border-none group-[.toaster]:!rounded-full group-[.toaster]:!shadow-lg group-[.toaster]:!py-4 group-[.toaster]:!px-6',
           error:
-            'group-[.toaster]:!bg-white/90 group-[.toaster]:!text-zinc-950 group-[.toaster]:!border-none group-[.toaster]:!rounded-full group-[.toaster]:!py-4 group-[.toaster]:!px-6',
+            'group-[.toaster]:!bg-foreground/90 group-[.toaster]:!text-background group-[.toaster]:!border-none group-[.toaster]:!rounded-full group-[.toaster]:!py-4 group-[.toaster]:!px-6',
           success:
-            'group-[.toaster]:!bg-white/90 group-[.toaster]:!text-zinc-950 group-[.toaster]:!border-none group-[.toaster]:!rounded-full group-[.toaster]:!py-4 group-[.toaster]:!px-6',
+            'group-[.toaster]:!bg-foreground/90 group-[.toaster]:!text-background group-[.toaster]:!border-none group-[.toaster]:!rounded-full group-[.toaster]:!py-4 group-[.toaster]:!px-6',
           warning:
-            'group-[.toaster]:!bg-white/90 group-[.toaster]:!text-zinc-950 group-[.toaster]:!border-none group-[.toaster]:!rounded-full group-[.toaster]:!py-4 group-[.toaster]:!px-6',
-          info: 'group-[.toaster]:!bg-white/90 group-[.toaster]:!text-zinc-950 group-[.toaster]:!border-none group-[.toaster]:!rounded-full group-[.toaster]:!py-4 group-[.toaster]:!px-6',
-          title: 'group-[.toast]:!text-zinc-950',
-          content: 'group-[.toast]:!text-zinc-950',
-          description: 'group-[.toast]:!text-zinc-500',
-          actionButton: 'group-[.toast]:!bg-zinc-900 group-[.toast]:!text-white',
-          cancelButton: 'group-[.toast]:!bg-zinc-100 group-[.toast]:!text-zinc-500',
+            'group-[.toaster]:!bg-foreground/90 group-[.toaster]:!text-background group-[.toaster]:!border-none group-[.toaster]:!rounded-full group-[.toaster]:!py-4 group-[.toaster]:!px-6',
+          info: 'group-[.toaster]:!bg-foreground/90 group-[.toaster]:!text-background group-[.toaster]:!border-none group-[.toaster]:!rounded-full group-[.toaster]:!py-4 group-[.toaster]:!px-6',
+          title: 'group-[.toast]:!text-background',
+          content: 'group-[.toast]:!text-background',
+          description: 'group-[.toast]:!text-background/70',
+          actionButton: 'group-[.toast]:!bg-background group-[.toast]:!text-foreground',
+          cancelButton: 'group-[.toast]:!bg-background/20 group-[.toast]:!text-background/70',
           closeButton: 'hidden opacity-0 pointer-events-none',
         },
       }}

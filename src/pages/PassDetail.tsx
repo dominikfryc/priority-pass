@@ -46,7 +46,7 @@ export function PassDetail() {
           The pass you are looking for does not exist or has been removed.
         </p>
         <Link
-          className="whitespace-nowrap flex items-center justify-center rounded-full shadow-lg h-14 px-6 gap-2 text-base font-medium bg-primary text-primary-foreground outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          className="whitespace-nowrap flex items-center justify-center rounded-full shadow-lg h-14 px-6 gap-2 text-base font-medium bg-primary text-primary-foreground outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           to="/"
         >
           Return to home
@@ -56,7 +56,7 @@ export function PassDetail() {
   }
 
   return (
-    <div className="grid p-4 gap-4 font-sans text-white">
+    <div className="grid p-4 gap-4 font-sans text-foreground">
       <div className="flex justify-between items-center">
         <Link
           to="/"
@@ -70,7 +70,7 @@ export function PassDetail() {
               })
             }
           }}
-          className="p-3 cursor-pointer w-fit rounded-full outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-background block"
+          className="p-3 cursor-pointer w-fit rounded-full outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background block"
         >
           <MdArrowBack className="w-6 h-6" />
         </Link>
@@ -78,7 +78,7 @@ export function PassDetail() {
         <DropdownMenu>
           <DropdownMenuTrigger
             aria-label="Open menu"
-            className="p-2 cursor-pointer w-fit rounded-full outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            className="p-2 cursor-pointer w-fit rounded-full outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
             <MdMoreVert className="w-6 h-6" />
           </DropdownMenuTrigger>

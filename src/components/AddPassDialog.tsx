@@ -15,7 +15,7 @@ export function AddPassDialog() {
   const [isProcessing, setIsProcessing] = useState(false)
   const [imageSrc, setImageSrc] = useState<string>('')
   const [pendingPass, setPendingPass] = useState<BoardingPass | null>(null)
-  const [boardingTime, setBoardingTime] = useState<string>('')
+  const [departureTime, setDepartureTime] = useState<string>('')
   const fileInputRef = useRef<HTMLInputElement>(null)
   const addPass = usePassStore((state) => state.addPass)
   const sharedFile = usePassStore((state) => state.sharedFile)
@@ -28,7 +28,7 @@ export function AddPassDialog() {
         setImageSrc('')
         setIsProcessing(false)
         setPendingPass(null)
-        setBoardingTime('')
+        setDepartureTime('')
       }, 300)
       return () => clearTimeout(timer)
     }
@@ -37,9 +37,9 @@ export function AddPassDialog() {
   const onPassParsed = (parsedPass: BoardingPass) => {
     setPendingPass(parsedPass)
     const date = new Date(parsedPass.flightDate)
-    const hours = String(date.getHours()).padStart(2, '0')
-    const mins = String(date.getMinutes()).padStart(2, '0')
-    setBoardingTime(`${hours}:${mins}`)
+    const tzOffset = date.getTimezoneOffset() * 60000
+    const localIso = new Date(date.getTime() - tzOffset).toISOString().slice(0, 16)
+    setDepartureTime(localIso)
     setOpen(true)
   }
 
@@ -98,9 +98,7 @@ export function AddPassDialog() {
 
   const handleConfirmTime = async () => {
     if (!pendingPass) return
-    const [hours, mins] = boardingTime.split(':').map(Number)
-    const newDate = new Date(pendingPass.flightDate)
-    newDate.setHours(hours, mins, 0, 0)
+    const newDate = new Date(departureTime)
 
     const finalPass = { ...pendingPass, flightDate: newDate }
     addPass(finalPass)
@@ -139,14 +137,14 @@ export function AddPassDialog() {
           {pendingPass ? (
             <>
               <DialogHeader>
-                <DialogTitle>Select boarding time</DialogTitle>
+                <DialogTitle>Select departure</DialogTitle>
               </DialogHeader>
               <div className="p-4 flex-1 overflow-y-auto">
-                <Label className="mb-2">Time</Label>
+                <Label className="mb-2">Departure</Label>
                 <Input
-                  type="time"
-                  value={boardingTime}
-                  onChange={(e) => setBoardingTime(e.target.value)}
+                  type="datetime-local"
+                  value={departureTime}
+                  onChange={(e) => setDepartureTime(e.target.value)}
                 />
               </div>
               <DialogFooter>

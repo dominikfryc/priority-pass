@@ -7,11 +7,14 @@
 - **Universal BCBP Parsing**: Robustly parses IATA Bar Coded Boarding Pass (BCBP) strings to extract passenger details, flight information, dates, and PNRs.
 - **Advanced Barcode Scanning**: Scan physical or digital boarding passes using your device's camera (powered by `@zxing/browser`), or directly import screenshots with an integrated image cropping tool (`react-image-crop`).
 - **Offline-First PWA**: Fully installable on iOS and Android devices. Utilizes Service Workers and Workbox to securely cache application assets, boarding pass data, and local airline logos for lightning-fast offline access.
-- **Dynamic Premium UI**:
+- **Web Share Target Integration**: Seamlessly share boarding pass screenshots directly from your device's photo gallery or other apps straight into Priority Pass using the native OS share sheet.
+- **Dynamic Premium UI & Customization**:
+  - Full support for automatic light and dark themes based on system preferences.
   - Automatically extracts dynamic color palettes from airline logos using `node-vibrant` to create beautiful, personalized boarding pass cards.
+  - Manually edit pass details and customize background/text colors.
   - Implements the modern Web View Transitions API for seamless, app-like morphing animations between pages.
   - Custom fluid swipe-to-dismiss interactions for toasts.
-- **Built-In Local Databases**: Includes comprehensive, locally-served databases for 1,000+ airlines (with offline logos) and over 7,000 international airports. This ensures privacy, complete offline reliability, and zero external network latency.
+- **Built-In Local Databases**: Includes comprehensive, locally-served databases for 650+ airlines (with offline logos) and 7,000+ international airports. This ensures privacy, complete offline reliability, and zero external network latency.
 
 ## Tech Stack
 
@@ -22,11 +25,12 @@
 - **Language**: [TypeScript](https://www.typescriptlang.org/)
 - **Routing**: [React Router DOM v7](https://reactrouter.com/)
 - **State Management**: [Zustand](https://zustand-demo.pmnd.rs/)
+- **Schema Validation**: [Zod](https://zod.dev/)
 
 ### Styling & UI
 
 - **CSS Framework**: [Tailwind CSS v4](https://tailwindcss.com/)
-- **Components**: [shadcn/ui](https://ui.shadcn.com/) (Radix Primitives)
+- **Components**: [shadcn/ui](https://ui.shadcn.com/) and [@base-ui/react](https://base-ui.com/)
 - **Icons**: [Material Icons](https://react-icons.github.io/react-icons/icons/md/)
 - **Typography**: [Google Sans Variable](https://fontsource.org/fonts/google-sans)
 - **Notifications**: [Sonner](https://sonner.emilkowal.ski/)
@@ -38,11 +42,13 @@
 - **Camera Scanning**: `@zxing/browser` & `@zxing/library`
 - **Color Extraction**: `node-vibrant`
 - **Image Cropping**: `react-image-crop`
+- **PWA Capabilities**: `vite-plugin-pwa`
 
 ## Development Workflow
 
 This project strictly enforces high code quality and consistency through automated tooling:
 
+- **Comprehensive Testing**: Setup includes unit/integration tests with Vitest & React Testing Library, and End-to-End (E2E) UI testing using Playwright.
 - **Type-Aware Linting**: Catches logical errors using ESLint.
 - **Auto-formatting**: Prettier ensures a consistent coding style across the codebase.
 - **Pre-commit Hooks**: Every commit is automatically linted and formatted using Husky and `lint-staged`.
@@ -55,12 +61,15 @@ This project strictly enforces high code quality and consistency through automat
 - **Installation**: Clone the repository and install dependencies using `pnpm install`.
 - **Development**: Run `pnpm dev` to start the local development server with Hot Module Replacement (HMR).
 - **Production Build**: Run `pnpm build` to build the application and generate the PWA Service Worker. You can preview it locally using `pnpm preview`.
+- **Testing**: Run `pnpm test` for unit tests, `pnpm test:ui` for the Vitest UI, or `pnpm test:e2e` for Playwright E2E tests.
 - **Making Commits**: Run `pnpm commit` to use the interactive commitizen prompt, ensuring your commit messages meet the project's standards.
 
 ## Project Structure
 
 | Path                 | Description                                                |
 | -------------------- | ---------------------------------------------------------- |
+| `.github/workflows/` | GitHub Actions CI/CD pipelines                             |
+| `e2e/`               | Playwright End-to-End (E2E) UI tests                       |
 | `public/`            | Static assets, service worker, offline logos and databases |
 | `src/components/`    | Reusable React components (Boarding Passes, Dialogs)       |
 | `src/components/ui/` | Shadcn UI primitives                                       |

@@ -3019,6 +3019,11 @@
     "iata": "W5",
     "icao": "IRM"
   },
+  "W4": {
+    "name": "Wizz Air Malta",
+    "iata": "W4",
+    "icao": "WMT"
+  },
   "W6": {
     "name": "Wizz Air",
     "iata": "W6",

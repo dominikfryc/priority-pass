@@ -49,12 +49,13 @@ test.describe('Priority Pass Application', () => {
     // Upload the real boarding pass
     await fileChooser.setFiles('./e2e/fixtures/pass.jpg')
 
-    // It should successfully read the barcode and show the "Select boarding time" dialog
-    await expect(page.getByRole('heading', { name: 'Select boarding time' })).toBeVisible()
+    // It should successfully read the barcode and show the "Select departure" dialog
+    await expect(page.getByRole('heading', { name: 'Select departure' })).toBeVisible()
 
-    // Pick a custom time (18:30) and confirm
-    const timeInput = page.locator('input[type="time"]')
-    await timeInput.fill('18:30')
+    // Pick a custom time (12:00) and confirm while keeping the prefilled date
+    const timeInput = page.locator('input[type="datetime-local"]')
+    const prefilledDate = (await timeInput.inputValue()).split('T')[0]
+    await timeInput.fill(`${prefilledDate}T12:00`)
     await page.getByRole('button', { name: 'Confirm' }).click()
 
     // The router should navigate to /pass/:id automatically
@@ -62,7 +63,7 @@ test.describe('Priority Pass Application', () => {
     await expect(menuTrigger).toBeVisible()
 
     // Verify the custom time was set and the barcode canvas rendered
-    await expect(page.locator('text=/18:30|6:30/i')).toBeVisible()
+    await expect(page.locator('text=/12:00/i')).toBeVisible()
     await expect(page.locator('canvas')).toBeVisible()
 
     // ---------------------------------------------------------

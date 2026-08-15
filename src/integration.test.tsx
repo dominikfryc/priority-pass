@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
@@ -74,10 +74,14 @@ describe('App Integration', () => {
     await user.upload(fileInput, file)
 
     // 4. The time selection dialog should open
-    const dialogTitle = await screen.findByText('Select boarding time')
+    const dialogTitle = await screen.findByText('Select departure')
     expect(dialogTitle).toBeInTheDocument()
 
-    // 5. Click confirm on the time dialog
+    // 5. Fill in the time and click confirm
+    const timeInput = document.querySelector('input[type="datetime-local"]') as HTMLInputElement
+    const prefilledDate = timeInput.value.split('T')[0]
+    fireEvent.change(timeInput, { target: { value: `${prefilledDate}T12:00` } })
+
     const confirmButton = screen.getByRole('button', { name: 'Confirm' })
     await user.click(confirmButton)
 

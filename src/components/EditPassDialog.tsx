@@ -6,6 +6,7 @@ import { Label } from './ui/label'
 import { usePassStore, type BoardingPass } from '../store/usePassStore'
 import { toast } from 'sonner'
 import { expandHex } from '../lib/expandHex'
+import { MdCheck } from 'react-icons/md'
 
 interface EditPassDialogProps {
   pass: BoardingPass
@@ -141,6 +142,21 @@ export function EditPassDialog({ pass, open, onOpenChange }: EditPassDialogProps
           <div className="border-t pt-4 flex flex-col gap-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
+                <Label className="mb-2">Sequence</Label>
+                <Input
+                  name="checkInSequenceNumber"
+                  value={formData.checkInSequenceNumber}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <Label className="mb-2">Seat</Label>
+                <Input name="seatNumber" value={formData.seatNumber} onChange={handleChange} />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
                 <Label className="mb-2">Passenger Name</Label>
                 <Input
                   name="passengerName"
@@ -149,23 +165,8 @@ export function EditPassDialog({ pass, open, onOpenChange }: EditPassDialogProps
                 />
               </div>
               <div>
-                <Label className="mb-2">Boarding Time</Label>
+                <Label className="mb-2">Departure</Label>
                 <Input type="datetime-local" value={localIsoString} onChange={handleDateChange} />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label className="mb-2">Seat</Label>
-                <Input name="seatNumber" value={formData.seatNumber} onChange={handleChange} />
-              </div>
-              <div>
-                <Label className="mb-2">Sequence</Label>
-                <Input
-                  name="checkInSequenceNumber"
-                  value={formData.checkInSequenceNumber}
-                  onChange={handleChange}
-                />
               </div>
             </div>
           </div>
@@ -181,7 +182,7 @@ export function EditPassDialog({ pass, open, onOpenChange }: EditPassDialogProps
                     onChange={(e) => handleThemeChange('backgroundColor', e.target.value)}
                     className="peer w-full h-full p-0 border-none! ring-0! cursor-pointer overflow-hidden appearance-none [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:border-none [&::-moz-color-swatch]:border-none"
                   />
-                  <div className="pointer-events-none absolute inset-0 rounded-xl border border-input peer-focus-visible:border-white peer-focus-visible:ring-1 peer-focus-visible:ring-inset peer-focus-visible:ring-white" />
+                  <div className="pointer-events-none absolute inset-0 rounded-xl border border-input peer-focus-visible:border-foreground peer-focus-visible:ring-1 peer-focus-visible:ring-inset peer-focus-visible:ring-foreground" />
                 </div>
               </div>
               <div>
@@ -193,7 +194,7 @@ export function EditPassDialog({ pass, open, onOpenChange }: EditPassDialogProps
                     onChange={(e) => handleThemeChange('foregroundColor', e.target.value)}
                     className="peer w-full h-full p-0 border-none! ring-0! cursor-pointer overflow-hidden appearance-none [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:border-none [&::-moz-color-swatch]:border-none"
                   />
-                  <div className="pointer-events-none absolute inset-0 rounded-xl border border-input peer-focus-visible:border-white peer-focus-visible:ring-1 peer-focus-visible:ring-inset peer-focus-visible:ring-white" />
+                  <div className="pointer-events-none absolute inset-0 rounded-xl border border-input peer-focus-visible:border-foreground peer-focus-visible:ring-1 peer-focus-visible:ring-inset peer-focus-visible:ring-foreground" />
                 </div>
               </div>
             </div>
@@ -205,9 +206,9 @@ export function EditPassDialog({ pass, open, onOpenChange }: EditPassDialogProps
                   {formData.palette.map((color) => (
                     <button
                       key={`${color.backgroundColor}-${color.foregroundColor}`}
-                      className={`flex-1 aspect-square max-h-12 max-w-12 rounded-full border shadow-sm flex items-center justify-center transition-transform hover:scale-110 focus-visible:outline-none focus-visible:border-transparent focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+                      className={`flex-1 aspect-square max-h-12 max-w-12 rounded-full border shadow-sm flex items-center justify-center focus-visible:outline-none focus-visible:border-transparent focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
                         formData.theme.backgroundColor === color.backgroundColor
-                          ? 'border-transparent ring-2 ring-white'
+                          ? 'border-transparent'
                           : 'border-input'
                       }`}
                       style={{
@@ -217,7 +218,11 @@ export function EditPassDialog({ pass, open, onOpenChange }: EditPassDialogProps
                       onClick={() => handlePaletteClick(color)}
                       title={`BG: ${color.backgroundColor}\nFG: ${color.foregroundColor}`}
                     >
-                      <span className="font-bold text-lg leading-none">A</span>
+                      {formData.theme.backgroundColor === color.backgroundColor ? (
+                        <MdCheck className="size-6" />
+                      ) : (
+                        <span className="font-bold text-lg leading-none">A</span>
+                      )}
                     </button>
                   ))}
                 </div>

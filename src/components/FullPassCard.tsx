@@ -1,4 +1,4 @@
-import { MdFlight, MdAirplaneTicket } from 'react-icons/md'
+import { MdFlight } from 'react-icons/md'
 import { getLocalImageUrl } from '../lib/utils'
 import { BarcodeRenderer } from './BarcodeRenderer'
 import type { BoardingPass } from '../store/usePassStore'
@@ -10,11 +10,11 @@ interface FullPassCardProps {
 export function FullPassCard({ pass }: FullPassCardProps) {
   const originCode = pass.departureAirport
   const destCode = pass.arrivalAirport
-  const flightNumber = `${pass.operatingCarrierDesignator || ''} ${pass.flightNumber || ''}`.trim()
+  const flightNumber = `${pass.operatingCarrierDesignator} ${pass.flightNumber}`.trim()
   const passengerName = pass.passengerName
-  const seat = pass.seatNumber || ''
-  const sequence = pass.checkInSequenceNumber || ''
-  const gateCloses = new Date(pass.flightDate).toLocaleString('en-US', {
+  const seat = pass.seatNumber
+  const sequence = pass.checkInSequenceNumber
+  const departure = new Date(pass.flightDate).toLocaleString('en-US', {
     month: 'short',
     day: 'numeric',
     hour: 'numeric',
@@ -35,7 +35,12 @@ export function FullPassCard({ pass }: FullPassCardProps) {
       <div className="p-6">
         <div className="flex justify-between items-center mb-5">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-foreground ring-1 ring-white/30 flex items-center justify-center shrink-0 overflow-hidden">
+            <div
+              className="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0 overflow-hidden"
+              style={{
+                boxShadow: `0 0 0 1px color-mix(in srgb, ${pass.theme.foregroundColor} 20%, transparent)`,
+              }}
+            >
               {pass.airlineLogoUrl ? (
                 <img
                   src={getLocalImageUrl(pass.airlineLogoUrl)}
@@ -43,7 +48,7 @@ export function FullPassCard({ pass }: FullPassCardProps) {
                   className="w-full h-full object-contain"
                 />
               ) : (
-                <MdAirplaneTicket className="w-4.5 h-4.5" />
+                <MdFlight className="w-4.5 h-4.5 text-black rotate-90" />
               )}
             </div>
             <span className="font-medium text-md">
@@ -73,12 +78,12 @@ export function FullPassCard({ pass }: FullPassCardProps) {
         {/* Grid 1 */}
         <div className="flex justify-between">
           <div>
-            <div className="text-sm font-normal">Boarding Door</div>
-            <div className="font-medium text-md">{boardingDoor}</div>
+            <div className="text-sm font-light">Passenger</div>
+            <div className="font-medium text-md">{passengerName}</div>
           </div>
           <div className="text-right">
-            <div className="text-sm font-normal">Gate Closes</div>
-            <div className="font-medium text-md">{gateCloses}</div>
+            <div className="text-sm font-normal">Departure</div>
+            <div className="font-medium text-md">{departure}</div>
           </div>
         </div>
 
@@ -90,8 +95,8 @@ export function FullPassCard({ pass }: FullPassCardProps) {
         {/* Grid 2 */}
         <div className="flex justify-between mb-8">
           <div>
-            <div className="text-sm font-light">Passenger</div>
-            <div className="font-medium text-md">{passengerName}</div>
+            <div className="text-sm font-normal">Boarding Door</div>
+            <div className="font-medium text-md">{boardingDoor}</div>
           </div>
           <div className="text-right">
             <div className="text-sm font-light">Sequence / Seat</div>
