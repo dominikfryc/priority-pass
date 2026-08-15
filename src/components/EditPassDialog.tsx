@@ -202,9 +202,9 @@ export function EditPassDialog({ pass, open, onOpenChange }: EditPassDialogProps
               <div>
                 <Label className="mb-2 block">Color Palette</Label>
                 <div className="flex w-full justify-between gap-2">
-                  {formData.palette.map((color, index) => (
+                  {formData.palette.map((color) => (
                     <button
-                      key={`${color.backgroundColor}-${color.foregroundColor}-${index}`}
+                      key={`${color.backgroundColor}-${color.foregroundColor}`}
                       className={`flex-1 aspect-square max-h-12 max-w-12 rounded-full border shadow-sm flex items-center justify-center transition-transform hover:scale-110 focus-visible:outline-none focus-visible:border-transparent focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
                         formData.theme.backgroundColor === color.backgroundColor
                           ? 'border-transparent ring-2 ring-white'
