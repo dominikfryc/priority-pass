@@ -1,16 +1,14 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { usePassStore } from '../store/usePassStore'
-import { BarcodeRenderer } from '../components/BarcodeRenderer'
+import { FullPassCard } from '../components/FullPassCard'
 import {
   MdArrowBack,
-  MdFlight,
   MdMoreVert,
   MdAirplaneTicket,
   MdOutlineEdit,
   MdDeleteOutline,
 } from 'react-icons/md'
-import { getLocalImageUrl } from '../lib/utils'
 import { EditPassDialog } from '../components/EditPassDialog'
 import { RemovePassDialog } from '../components/RemovePassDialog'
 import {
@@ -57,27 +55,12 @@ export function PassDetail() {
     )
   }
 
-  const originCode = pass.departureAirport
-  const destCode = pass.arrivalAirport
-  const flightNumber = `${pass.operatingCarrierDesignator || ''} ${pass.flightNumber || ''}`.trim()
-  const passengerName = pass.passengerName
-  const seat = pass.seatNumber || ''
-  const sequence = pass.checkInSequenceNumber || ''
-  const gateCloses = new Date(pass.flightDate).toLocaleString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-  })
-  const seatRowMatch = seat?.match(/\d+/)
-  const seatRow = seatRowMatch ? parseInt(seatRowMatch[0], 10) : 0
-  const boardingDoor = seatRow >= 15 ? 'Back' : 'Front'
-
   return (
     <div className="grid p-4 gap-4 font-sans text-white">
       <div className="flex justify-between items-center">
         <Link
           to="/"
+          aria-label="Back to home"
           onClick={(e) => {
             if (document.startViewTransition) {
               e.preventDefault()
@@ -93,7 +76,10 @@ export function PassDetail() {
         </Link>
 
         <DropdownMenu>
-          <DropdownMenuTrigger className="p-2 cursor-pointer w-fit rounded-full outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-background">
+          <DropdownMenuTrigger
+            aria-label="Open menu"
+            className="p-2 cursor-pointer w-fit rounded-full outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          >
             <MdMoreVert className="w-6 h-6" />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-max">
@@ -109,91 +95,7 @@ export function PassDetail() {
         </DropdownMenu>
       </div>
 
-      <div
-        className="w-full rounded-3xl shadow-2xl overflow-hidden flex flex-col"
-        style={{
-          backgroundColor: pass.theme.backgroundColor,
-          color: pass.theme.foregroundColor,
-        }}
-      >
-        <div className="p-6">
-          <div className="flex justify-between items-center mb-5">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-foreground ring-1 ring-white/30 flex items-center justify-center shrink-0 overflow-hidden">
-                {pass.airlineLogoUrl ? (
-                  <img
-                    src={getLocalImageUrl(pass.airlineLogoUrl)}
-                    alt={pass.airlineName}
-                    className="w-full h-full object-contain"
-                  />
-                ) : (
-                  <MdAirplaneTicket className="w-4.5 h-4.5" />
-                )}
-              </div>
-              <span className="font-medium text-md">
-                {pass.airlineName || pass.operatingCarrierDesignator}
-              </span>
-            </div>
-            <span className="font-medium text-md">{flightNumber}</span>
-          </div>
-
-          <div
-            className="h-px w-full mb-6 -mx-6 px-12 opacity-20"
-            style={{ width: 'calc(100% + 48px)', backgroundColor: pass.theme.foregroundColor }}
-          />
-
-          {/* Route Section */}
-          <div className="mb-8">
-            <div className="text-md font-medium mb-2">
-              {pass.departureCity} to {pass.arrivalCity}
-            </div>
-            <div className="flex items-center gap-3 text-5xl font-normal">
-              <span>{originCode}</span>
-              <MdFlight className="w-8 h-8 rotate-90 mx-1" />
-              <span>{destCode}</span>
-            </div>
-          </div>
-
-          {/* Grid 1 */}
-          <div className="flex justify-between">
-            <div>
-              <div className="text-sm font-normal">Boarding Door</div>
-              <div className="font-medium text-md">{boardingDoor}</div>
-            </div>
-            <div className="text-right">
-              <div className="text-sm font-normal">Gate Closes</div>
-              <div className="font-medium text-md">{gateCloses}</div>
-            </div>
-          </div>
-
-          <div
-            className="h-px w-full my-4 px-12 opacity-20 mx-auto"
-            style={{ backgroundColor: pass.theme.foregroundColor }}
-          />
-
-          {/* Grid 2 */}
-          <div className="flex justify-between mb-8">
-            <div>
-              <div className="text-sm font-light">Passenger</div>
-              <div className="font-medium text-md">{passengerName}</div>
-            </div>
-            <div className="text-right">
-              <div className="text-sm font-light">Sequence / Seat</div>
-              <div className="font-medium text-md">
-                {sequence} / {seat}
-              </div>
-            </div>
-          </div>
-
-          {/* Subtext */}
-          <div className="text-center text-xs font-light mb-4 mt-6">Priority & 2 Cabin bags</div>
-
-          {/* Barcode */}
-          <div className="flex justify-center pb-2">
-            <BarcodeRenderer data={pass.rawAztecData} />
-          </div>
-        </div>
-      </div>
+      <FullPassCard pass={pass} />
 
       <EditPassDialog pass={pass} open={editOpen} onOpenChange={setEditOpen} />
       <RemovePassDialog passId={pass.id} open={deleteOpen} onOpenChange={setDeleteOpen} />

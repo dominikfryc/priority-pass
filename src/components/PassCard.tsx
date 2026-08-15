@@ -26,12 +26,6 @@ export function PassCard({ pass }: { pass: BoardingPass }) {
         }
       }}
       className="cursor-pointer bg-card rounded-3xl overflow-hidden flex gap-4 items-center p-5 outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-background text-left w-full"
-      onKeyDown={(e) => {
-        if (e.key === ' ') {
-          e.preventDefault()
-          e.currentTarget.click()
-        }
-      }}
     >
       <div className="w-12 h-12 rounded-full bg-foreground ring-1 ring-white/30 flex items-center justify-center shrink-0 overflow-hidden">
         {pass.airlineLogoUrl ? (

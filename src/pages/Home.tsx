@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { usePassStore } from '../store/usePassStore'
 import { PassCard } from '../components/PassCard'
 import { MdAirplaneTicket } from 'react-icons/md'
@@ -10,6 +10,12 @@ export function Home() {
   useEffect(() => {
     document.title = 'Priority Pass'
   }, [])
+
+  const sortedPasses = useMemo(() => {
+    return [...passes].sort(
+      (a, b) => new Date(b.flightDate).getTime() - new Date(a.flightDate).getTime(),
+    )
+  }, [passes])
 
   return (
     <div className="grid px-4 py-6 gap-6">
@@ -30,11 +36,9 @@ export function Home() {
         </div>
       ) : (
         <div className="grid gap-2">
-          {[...passes]
-            .sort((a, b) => new Date(b.flightDate).getTime() - new Date(a.flightDate).getTime())
-            .map((pass) => (
-              <PassCard key={pass.id} pass={pass} />
-            ))}
+          {sortedPasses.map((pass) => (
+            <PassCard key={pass.id} pass={pass} />
+          ))}
         </div>
       )}
 

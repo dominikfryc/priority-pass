@@ -3,29 +3,19 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { Label } from './ui/label'
-import { BrowserMultiFormatReader } from '@zxing/browser'
-import { BarcodeFormat, DecodeHintType } from '@zxing/library'
 import { usePassStore, type BoardingPass } from '../store/usePassStore'
-import { decode } from 'bcbp'
 import { useNavigate } from 'react-router-dom'
 import { MdAdd } from 'react-icons/md'
 import { toast } from 'sonner'
-import ReactCrop, { type Crop, type PixelCrop, centerCrop, makeAspectCrop } from 'react-image-crop'
-import 'react-image-crop/dist/ReactCrop.css'
-import { Vibrant } from 'node-vibrant/browser'
-import { expandHex } from '../lib/expandHex'
-import { generateUUID, getLocalImageUrl } from '../lib/utils'
-import { formatPassengerName } from '../lib/formatName'
+import { processPassImage } from '../lib/passParser'
+import { PassCropper } from './PassCropper'
 
 export function AddPassDialog() {
   const [open, setOpen] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
   const [imageSrc, setImageSrc] = useState<string>('')
-  const [crop, setCrop] = useState<Crop>()
-  const [completedCrop, setCompletedCrop] = useState<PixelCrop>()
   const [pendingPass, setPendingPass] = useState<BoardingPass | null>(null)
   const [boardingTime, setBoardingTime] = useState<string>('')
-  const imageRef = useRef<HTMLImageElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const addPass = usePassStore((state) => state.addPass)
   const sharedFile = usePassStore((state) => state.sharedFile)
@@ -36,8 +26,6 @@ export function AddPassDialog() {
     if (!open) {
       const timer = setTimeout(() => {
         setImageSrc('')
-        setCrop(undefined)
-        setCompletedCrop(undefined)
         setIsProcessing(false)
         setPendingPass(null)
         setBoardingTime('')
@@ -45,170 +33,6 @@ export function AddPassDialog() {
       return () => clearTimeout(timer)
     }
   }, [open])
-
-  const processPassImage = async (imageUrl: string, originalImageUrl?: string) => {
-    const hints = new Map()
-    hints.set(DecodeHintType.POSSIBLE_FORMATS, [
-      BarcodeFormat.AZTEC,
-      BarcodeFormat.PDF_417,
-      BarcodeFormat.QR_CODE,
-      BarcodeFormat.DATA_MATRIX,
-    ])
-    const reader = new BrowserMultiFormatReader(hints)
-    const img = new Image()
-
-    await new Promise((resolve, reject) => {
-      img.onload = resolve
-      img.onerror = reject
-      img.src = imageUrl
-    })
-
-    const result = await reader.decodeFromImageElement(img)
-    const text = result.getText()
-    const decoded = decode(text)
-    const leg = decoded.data?.legs?.[0]
-
-    let airlineName = ''
-    let airlineLogoUrl = ''
-    let departureCity = ''
-    let arrivalCity = ''
-
-    try {
-      const [airlinesRes, airportsRes] = await Promise.all([
-        fetch(`${import.meta.env.BASE_URL}airlines.json`),
-        fetch(`${import.meta.env.BASE_URL}airports.json`),
-      ])
-      const airlines = (await airlinesRes.json()) as Record<
-        string,
-        { name: string; iata: string; icao?: string }
-      >
-      const airports = (await airportsRes.json()) as Record<string, string>
-
-      let foundAirline = undefined
-      if (leg?.operatingCarrierDesignator) {
-        const designator = leg.operatingCarrierDesignator.trim()
-
-        if (airlines[designator]) {
-          foundAirline = airlines[designator]
-        } else if (designator.length === 3) {
-          const icaoToIata: Record<string, string> = {}
-          for (const iataKey in airlines) {
-            const icaoCode = airlines[iataKey].icao
-            if (icaoCode && !icaoToIata[icaoCode]) {
-              icaoToIata[icaoCode] = iataKey
-            }
-          }
-          if (icaoToIata[designator]) {
-            foundAirline = airlines[icaoToIata[designator]]
-          }
-        }
-      }
-      if (foundAirline) {
-        airlineName = foundAirline.name || ''
-        airlineLogoUrl = foundAirline.iata ? `/logos/${foundAirline.iata}.png` : ''
-      }
-
-      if (leg?.departureAirport) {
-        departureCity = airports[leg.departureAirport] || ''
-      }
-      if (leg?.arrivalAirport) {
-        arrivalCity = airports[leg.arrivalAirport] || ''
-      }
-    } catch (error) {
-      console.error('Failed to fetch airlines or airports data', error)
-    }
-
-    const theme = {
-      backgroundColor: '#ffffff',
-      foregroundColor: '#000000',
-    }
-    let palette = [] as {
-      backgroundColor: string
-      foregroundColor: string
-    }[]
-    let vibrantPallete = null
-
-    if (airlineLogoUrl) {
-      try {
-        const targetLogoUrl = getLocalImageUrl(airlineLogoUrl)
-        vibrantPallete = await Vibrant.from(targetLogoUrl).getPalette()
-      } catch (err) {
-        console.error('Failed to extract color from logo', err)
-      }
-    }
-
-    const hasValidColors =
-      vibrantPallete &&
-      (vibrantPallete.DarkVibrant ||
-        vibrantPallete.Vibrant ||
-        vibrantPallete.Muted ||
-        vibrantPallete.DarkMuted ||
-        vibrantPallete.LightVibrant ||
-        vibrantPallete.LightMuted)
-
-    if (!hasValidColors) {
-      const colorSourceUrl = originalImageUrl || imageUrl
-      if (colorSourceUrl) {
-        try {
-          vibrantPallete = await Vibrant.from(colorSourceUrl).getPalette()
-        } catch (err) {
-          console.error('Failed to extract color from image', err)
-        }
-      }
-    }
-
-    if (vibrantPallete) {
-      theme.backgroundColor = expandHex(vibrantPallete.DarkVibrant?.hex, '#ffffff')
-      theme.foregroundColor = expandHex(vibrantPallete.DarkVibrant?.titleTextColor, '#000000')
-      palette = [
-        {
-          backgroundColor: expandHex(vibrantPallete.DarkVibrant?.hex, '#ffffff'),
-          foregroundColor: expandHex(vibrantPallete.DarkVibrant?.titleTextColor, '#000000'),
-        },
-        {
-          backgroundColor: expandHex(vibrantPallete.Vibrant?.hex, '#ffffff'),
-          foregroundColor: expandHex(vibrantPallete.Vibrant?.titleTextColor, '#000000'),
-        },
-        {
-          backgroundColor: expandHex(vibrantPallete.LightVibrant?.hex, '#ffffff'),
-          foregroundColor: expandHex(vibrantPallete.LightVibrant?.titleTextColor, '#000000'),
-        },
-        {
-          backgroundColor: expandHex(vibrantPallete.Muted?.hex, '#ffffff'),
-          foregroundColor: expandHex(vibrantPallete.Muted?.titleTextColor, '#000000'),
-        },
-        {
-          backgroundColor: expandHex(vibrantPallete.DarkMuted?.hex, '#ffffff'),
-          foregroundColor: expandHex(vibrantPallete.DarkMuted?.titleTextColor, '#000000'),
-        },
-        {
-          backgroundColor: expandHex(vibrantPallete.LightMuted?.hex, '#ffffff'),
-          foregroundColor: expandHex(vibrantPallete.LightMuted?.titleTextColor, '#000000'),
-        },
-      ]
-    }
-
-    const parsedPass = {
-      id: generateUUID(),
-      passengerName: formatPassengerName(decoded.data?.passengerName || ''),
-      operatingCarrierPNR: leg?.operatingCarrierPNR || '',
-      departureAirport: leg?.departureAirport || '',
-      arrivalAirport: leg?.arrivalAirport || '',
-      operatingCarrierDesignator: leg?.operatingCarrierDesignator || '',
-      flightNumber: leg?.flightNumber || '',
-      flightDate: leg?.flightDate || new Date(),
-      seatNumber: (leg?.seatNumber || '').replace(/^0+/, ''),
-      checkInSequenceNumber: (leg?.checkInSequenceNumber || '').replace(/^0+/, ''),
-      airlineName,
-      airlineLogoUrl,
-      departureCity,
-      arrivalCity,
-      rawAztecData: text,
-      theme,
-      palette,
-    }
-    return parsedPass
-  }
 
   const onPassParsed = (parsedPass: BoardingPass) => {
     setPendingPass(parsedPass)
@@ -233,8 +57,6 @@ export function AddPassDialog() {
       onPassParsed(parsedPass)
     } catch {
       setImageSrc(imageUrl)
-      setCrop(undefined)
-      setCompletedCrop(undefined)
       setOpen(true)
       if (fileInputRef.current) {
         fileInputRef.current.value = ''
@@ -253,8 +75,6 @@ export function AddPassDialog() {
           setSharedFile(null)
         } catch {
           setImageSrc(imageUrl)
-          setCrop(undefined)
-          setCompletedCrop(undefined)
           setOpen(true)
           setSharedFile(null)
         }
@@ -263,57 +83,10 @@ export function AddPassDialog() {
     }
   }, [sharedFile, setSharedFile])
 
-  const onImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
-    const { naturalWidth, naturalHeight } = e.currentTarget
-    const initialCrop = centerCrop(
-      makeAspectCrop(
-        {
-          unit: '%',
-          width: 80,
-        },
-        1,
-        naturalWidth,
-        naturalHeight,
-      ),
-      naturalWidth,
-      naturalHeight,
-    )
-    setCrop(initialCrop)
-  }
-
-  const handleConfirmCrop = async () => {
-    if (!completedCrop || !imageRef.current) return
-
+  const handleConfirmCrop = async (croppedImageUrl: string) => {
     setIsProcessing(true)
     try {
-      const scaleX = imageRef.current.naturalWidth / imageRef.current.width
-      const scaleY = imageRef.current.naturalHeight / imageRef.current.height
-
-      const canvas = document.createElement('canvas')
-      canvas.width = completedCrop.width * scaleX
-      canvas.height = completedCrop.height * scaleY
-
-      const ctx = canvas.getContext('2d')
-      if (!ctx) {
-        throw new Error('No 2d context')
-      }
-
-      ctx.drawImage(
-        imageRef.current,
-        completedCrop.x * scaleX,
-        completedCrop.y * scaleY,
-        completedCrop.width * scaleX,
-        completedCrop.height * scaleY,
-        0,
-        0,
-        completedCrop.width * scaleX,
-        completedCrop.height * scaleY,
-      )
-
-      const croppedImageUrl = canvas.toDataURL('image/jpeg')
-
       const parsedPass = await processPassImage(croppedImageUrl, imageSrc)
-
       onPassParsed(parsedPass)
     } catch (error) {
       console.error(error)
@@ -386,53 +159,12 @@ export function AddPassDialog() {
               </DialogFooter>
             </>
           ) : imageSrc ? (
-            <>
-              <DialogHeader>
-                <DialogTitle>Crop boarding pass</DialogTitle>
-              </DialogHeader>
-              <div className="p-4 flex-1 overflow-y-auto flex items-center justify-center">
-                <div className="w-fit max-w-full mx-auto flex justify-center items-center overflow-hidden rounded-lg [&_.ReactCrop__crop-mask]:hidden [&_.ReactCrop__crop-selection]:rounded-lg [&_.ReactCrop__crop-selection]:shadow-[0_0_0_9999px_rgba(0,0,0,0.5)]">
-                  <ReactCrop
-                    crop={crop}
-                    onChange={(c) => setCrop(c)}
-                    onComplete={(c) => setCompletedCrop(c)}
-                    aspect={1}
-                    className="h-fit max-h-[calc(100svh-13rem)]"
-                  >
-                    <img
-                      ref={imageRef}
-                      src={imageSrc}
-                      alt="Crop preview"
-                      onLoad={onImageLoad}
-                      className="block mx-auto object-contain crop-preview-image"
-                      style={{
-                        width: 'auto',
-                        height: 'auto',
-                      }}
-                    />
-                  </ReactCrop>
-                </div>
-              </div>
-              <DialogFooter>
-                <Button
-                  variant="outline"
-                  onClick={() => setOpen(false)}
-                  disabled={isProcessing}
-                  className="flex-1 h-10"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={() => {
-                    void handleConfirmCrop()
-                  }}
-                  disabled={isProcessing || !completedCrop?.width || !completedCrop?.height}
-                  className="flex-1 h-10"
-                >
-                  {isProcessing ? 'Processing...' : 'Confirm'}
-                </Button>
-              </DialogFooter>
-            </>
+            <PassCropper
+              imageSrc={imageSrc}
+              isProcessing={isProcessing}
+              onConfirmCrop={(croppedUrl) => void handleConfirmCrop(croppedUrl)}
+              onCancel={() => setOpen(false)}
+            />
           ) : null}
         </DialogContent>
       </Dialog>
