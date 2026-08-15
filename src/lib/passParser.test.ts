@@ -149,6 +149,7 @@ describe('processPassImage', () => {
 
   it('handles missing or failed fetch requests gracefully', async () => {
     vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Network error')))
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
 
     const result = await processPassImage('blob:http://localhost/test-image')
 
@@ -160,5 +161,7 @@ describe('processPassImage', () => {
     // A toast error should be shown
     const { toast } = await import('sonner')
     expect(toast.error).toHaveBeenCalled()
+
+    consoleSpy.mockRestore()
   })
 })

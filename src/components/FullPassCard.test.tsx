@@ -3,6 +3,10 @@ import { describe, it, expect } from 'vitest'
 import { FullPassCard } from './FullPassCard'
 import type { BoardingPass } from '../store/usePassStore'
 
+vi.mock('./BarcodeRenderer', () => ({
+  BarcodeRenderer: () => <div data-testid="mock-barcode-renderer" />,
+}))
+
 describe('FullPassCard Component', () => {
   const mockPass: BoardingPass = {
     id: 'pass-1',

@@ -4,6 +4,10 @@ import { MemoryRouter } from 'react-router-dom'
 import { PassCard } from './PassCard'
 import type { BoardingPass } from '../store/usePassStore'
 
+vi.mock('./BarcodeRenderer', () => ({
+  BarcodeRenderer: () => <div data-testid="mock-barcode-renderer" />,
+}))
+
 describe('PassCard Component', () => {
   const mockPass: BoardingPass = {
     id: '12345',
