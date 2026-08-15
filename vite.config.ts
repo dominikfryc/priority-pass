@@ -1,12 +1,20 @@
+/// <reference types="vitest" />
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 import { fileURLToPath, URL } from 'node:url'
+import { configDefaults } from 'vitest/config'
 
 const basePath = process.env.VITE_BASE_PATH || '/'
 
 export default defineConfig({
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: './src/setupTests.ts',
+    exclude: [...configDefaults.exclude, 'e2e/*'],
+  },
   base: basePath,
   plugins: [
     react(),
