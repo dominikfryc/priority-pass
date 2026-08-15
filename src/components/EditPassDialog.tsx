@@ -206,11 +206,7 @@ export function EditPassDialog({ pass, open, onOpenChange }: EditPassDialogProps
                   {formData.palette.map((color) => (
                     <button
                       key={`${color.backgroundColor}-${color.foregroundColor}`}
-                      className={`flex-1 aspect-square max-h-12 max-w-12 rounded-full border shadow-sm flex items-center justify-center focus-visible:outline-none focus-visible:border-transparent focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
-                        formData.theme.backgroundColor === color.backgroundColor
-                          ? 'border-transparent'
-                          : 'border-input'
-                      }`}
+                      className="flex-1 aspect-square max-h-12 max-w-12 rounded-full border border-input shadow-sm flex items-center justify-center focus-visible:outline-none focus-visible:border-transparent focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                       style={{
                         backgroundColor: color.backgroundColor,
                         color: color.foregroundColor,
