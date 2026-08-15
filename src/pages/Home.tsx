@@ -12,9 +12,9 @@ export function Home() {
   }, [])
 
   return (
-    <div className="grid px-4 py-6 gap-8">
+    <div className="grid px-4 py-6 gap-6">
       <header className="px-2">
-        <h1 className="text-4xl font-normal mb-2">Passes</h1>
+        <h1 className="text-4xl font-normal mb-1">Passes</h1>
         <p className="text-muted-foreground">Manage your boarding passes</p>
       </header>
 

@@ -45,7 +45,7 @@ export function AddPassDialog() {
     }
   }, [open])
 
-  const processPassImage = async (imageUrl: string) => {
+  const processPassImage = async (imageUrl: string, originalImageUrl?: string) => {
     const hints = new Map()
     hints.set(DecodeHintType.POSSIBLE_FORMATS, [
       BarcodeFormat.AZTEC,
@@ -127,42 +127,66 @@ export function AddPassDialog() {
       backgroundColor: string
       foregroundColor: string
     }[]
+    let vibrantPallete = null
+
     if (airlineLogoUrl) {
       try {
         const targetLogoUrl = `${import.meta.env.BASE_URL}${airlineLogoUrl.replace(/^\//, '')}`
-        const vibrantPallete = await Vibrant.from(targetLogoUrl).getPalette()
-
-        theme.backgroundColor = expandHex(vibrantPallete.DarkVibrant?.hex, '#ffffff')
-        theme.foregroundColor = expandHex(vibrantPallete.DarkVibrant?.titleTextColor, '#000000')
-        palette = [
-          {
-            backgroundColor: expandHex(vibrantPallete.DarkVibrant?.hex, '#ffffff'),
-            foregroundColor: expandHex(vibrantPallete.DarkVibrant?.titleTextColor, '#000000'),
-          },
-          {
-            backgroundColor: expandHex(vibrantPallete.Vibrant?.hex, '#ffffff'),
-            foregroundColor: expandHex(vibrantPallete.Vibrant?.titleTextColor, '#000000'),
-          },
-          {
-            backgroundColor: expandHex(vibrantPallete.LightVibrant?.hex, '#ffffff'),
-            foregroundColor: expandHex(vibrantPallete.LightVibrant?.titleTextColor, '#000000'),
-          },
-          {
-            backgroundColor: expandHex(vibrantPallete.Muted?.hex, '#ffffff'),
-            foregroundColor: expandHex(vibrantPallete.Muted?.titleTextColor, '#000000'),
-          },
-          {
-            backgroundColor: expandHex(vibrantPallete.DarkMuted?.hex, '#ffffff'),
-            foregroundColor: expandHex(vibrantPallete.DarkMuted?.titleTextColor, '#000000'),
-          },
-          {
-            backgroundColor: expandHex(vibrantPallete.LightMuted?.hex, '#ffffff'),
-            foregroundColor: expandHex(vibrantPallete.LightMuted?.titleTextColor, '#000000'),
-          },
-        ]
+        vibrantPallete = await Vibrant.from(targetLogoUrl).getPalette()
       } catch (err) {
         console.error('Failed to extract color from logo', err)
       }
+    }
+
+    const hasValidColors =
+      vibrantPallete &&
+      (vibrantPallete.DarkVibrant ||
+        vibrantPallete.Vibrant ||
+        vibrantPallete.Muted ||
+        vibrantPallete.DarkMuted ||
+        vibrantPallete.LightVibrant ||
+        vibrantPallete.LightMuted)
+
+    if (!hasValidColors) {
+      const colorSourceUrl = originalImageUrl || imageUrl
+      if (colorSourceUrl) {
+        try {
+          vibrantPallete = await Vibrant.from(colorSourceUrl).getPalette()
+        } catch (err) {
+          console.error('Failed to extract color from image', err)
+        }
+      }
+    }
+
+    if (vibrantPallete) {
+      theme.backgroundColor = expandHex(vibrantPallete.DarkVibrant?.hex, '#ffffff')
+      theme.foregroundColor = expandHex(vibrantPallete.DarkVibrant?.titleTextColor, '#000000')
+      palette = [
+        {
+          backgroundColor: expandHex(vibrantPallete.DarkVibrant?.hex, '#ffffff'),
+          foregroundColor: expandHex(vibrantPallete.DarkVibrant?.titleTextColor, '#000000'),
+        },
+        {
+          backgroundColor: expandHex(vibrantPallete.Vibrant?.hex, '#ffffff'),
+          foregroundColor: expandHex(vibrantPallete.Vibrant?.titleTextColor, '#000000'),
+        },
+        {
+          backgroundColor: expandHex(vibrantPallete.LightVibrant?.hex, '#ffffff'),
+          foregroundColor: expandHex(vibrantPallete.LightVibrant?.titleTextColor, '#000000'),
+        },
+        {
+          backgroundColor: expandHex(vibrantPallete.Muted?.hex, '#ffffff'),
+          foregroundColor: expandHex(vibrantPallete.Muted?.titleTextColor, '#000000'),
+        },
+        {
+          backgroundColor: expandHex(vibrantPallete.DarkMuted?.hex, '#ffffff'),
+          foregroundColor: expandHex(vibrantPallete.DarkMuted?.titleTextColor, '#000000'),
+        },
+        {
+          backgroundColor: expandHex(vibrantPallete.LightMuted?.hex, '#ffffff'),
+          foregroundColor: expandHex(vibrantPallete.LightMuted?.titleTextColor, '#000000'),
+        },
+      ]
     }
 
     const parsedPass = {
@@ -289,7 +313,7 @@ export function AddPassDialog() {
 
       const croppedImageUrl = canvas.toDataURL('image/jpeg')
 
-      const parsedPass = await processPassImage(croppedImageUrl)
+      const parsedPass = await processPassImage(croppedImageUrl, imageSrc)
 
       onPassParsed(parsedPass)
     } catch (error) {
@@ -322,16 +346,14 @@ export function AddPassDialog() {
 
   return (
     <>
-      <div className="fixed bottom-8 left-0 right-0 pointer-events-none flex justify-center z-40">
-        <div className="w-full max-w-md relative h-14">
-          <button
-            className="pointer-events-auto absolute right-6 bottom-0 inline-flex items-center justify-center whitespace-nowrap rounded-full shadow-lg h-14 px-6 gap-2 text-base font-medium bg-primary text-primary-foreground cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-            onClick={() => fileInputRef.current?.click()}
-          >
-            <MdAdd className="w-6 h-6" />
-            Add pass
-          </button>
-        </div>
+      <div className="fixed bottom-6 left-0 right-0 mx-auto w-full max-w-md pointer-events-none z-40 flex justify-end px-4">
+        <Button
+          className="pointer-events-auto shadow-lg h-14 px-6 gap-2 text-base cursor-pointer shrink-0"
+          onClick={() => fileInputRef.current?.click()}
+        >
+          <MdAdd className="size-6" />
+          Add pass
+        </Button>
       </div>
       <input
         type="file"
