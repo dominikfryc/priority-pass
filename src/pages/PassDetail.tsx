@@ -11,6 +11,7 @@ import {
 } from 'react-icons/md'
 import { EditPassDialog } from '../components/EditPassDialog'
 import { RemovePassDialog } from '../components/RemovePassDialog'
+import { Button } from '../components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -45,12 +46,9 @@ export function PassDetail() {
         <p className="text-muted-foreground max-w-xs mb-6">
           The pass you are looking for does not exist or has been removed.
         </p>
-        <Link
-          className="whitespace-nowrap flex items-center justify-center rounded-full shadow-lg h-14 px-6 gap-2 text-base font-medium bg-primary text-primary-foreground outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-          to="/"
-        >
+        <Button render={<Link to="/" />} className="shadow-lg h-14 px-6 text-base gap-2">
           Return to home
-        </Link>
+        </Button>
       </div>
     )
   }
@@ -78,7 +76,7 @@ export function PassDetail() {
         <DropdownMenu>
           <DropdownMenuTrigger
             aria-label="Open menu"
-            className="p-2 cursor-pointer w-fit rounded-full outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            className="p-3 cursor-pointer w-fit rounded-full outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
             <MdMoreVert className="w-6 h-6" />
           </DropdownMenuTrigger>
